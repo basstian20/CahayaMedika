@@ -130,6 +130,50 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Profil Dokter — S2 (grid kartu foto + nama + spesialisasi, Wireframe §S2) */}
+      {dokter.length > 0 && (
+        <section id="dokter" className="px-6 py-16">
+          <h2 className="mb-8 text-center font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
+            Tenaga Medis Kami
+          </h2>
+          <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {dokter.map((d) => (
+              <div
+                key={d.id}
+                className="rounded-xl bg-white p-6 text-center shadow-card transition hover:shadow-lg"
+              >
+                {d.foto_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={d.foto_url}
+                    alt={d.nama}
+                    className="mx-auto mb-4 h-32 w-32 rounded-xl object-cover"
+                  />
+                ) : (
+                  <div
+                    className="mx-auto mb-4 flex h-32 w-32 items-center justify-center rounded-xl bg-nakhoda/10"
+                    aria-hidden
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      className="h-12 w-12 text-nakhoda/40"
+                    >
+                      <circle cx="12" cy="8" r="4" />
+                      <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                    </svg>
+                  </div>
+                )}
+                <h3 className="font-display text-lg font-semibold text-nakhoda">{d.nama}</h3>
+                <p className="text-sm text-nakhoda/70">{d.spesialisasi}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Jadwal Dokter Mingguan — S3 */}
       {dokter.length > 0 && (
         <section id="jadwal" className="px-6 py-16">
@@ -210,6 +254,7 @@ export default async function HomePage() {
       <footer className="border-t border-nakhoda/10 px-6 py-8 text-center text-sm text-nakhoda/50">
         <nav className="mb-2 flex justify-center gap-4">
           <a href="#layanan">Layanan</a>
+          <a href="#dokter">Dokter</a>
           <a href="#jadwal">Jadwal</a>
           <a href="#kontak">Kontak</a>
         </nav>

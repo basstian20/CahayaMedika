@@ -4,6 +4,9 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Added
+- Homepage publik: section "Tenaga Medis Kami" (grid kartu foto + nama + spesialisasi dokter),
+  melengkapi S2 yang sudah didefinisikan di Wireframe tapi belum diimplementasikan.
 
 ## [0.1.0] - 2026-08-17
 ### Added
