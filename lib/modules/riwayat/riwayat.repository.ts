@@ -23,8 +23,12 @@ export async function insertRiwayat(
   if (error) throw new InternalError(`Gagal mencatat riwayat perubahan: ${error.message}`);
 }
 
-// Reverse-chronological, join ke auth.users untuk admin_email lewat FK
-// constraint riwayat_perubahan_admin_id_fkey (supabase/migrations/0005) sesuai contoh TSD §4.3
+// Reverse-chronological. admin_email diambil dari view
+// public.riwayat_perubahan_with_admin (supabase/migrations/0007) — PostgREST
+// tidak bisa embed auth.users lewat FK join biasa meski FK constraint
+// riwayat_perubahan_admin_id_fkey (migrasi 0005) ada, karena auth schema tidak
+// diekspos ke PostgREST schema cache untuk embedding. Ditemukan saat testing
+// end-to-end, lihat catatan di migrasi 0007.
 export async function paginateRiwayat(
   page: number,
   limit: number
@@ -34,8 +38,8 @@ export async function paginateRiwayat(
   const to = from + limit; // ambil 1 ekstra untuk deteksi has_more
 
   const { data, error } = await supabase
-    .from("riwayat_perubahan")
-    .select("id, jenis_perubahan, ringkasan, created_at, admin:admin_id(email)")
+    .from("riwayat_perubahan_with_admin")
+    .select("id, jenis_perubahan, ringkasan, created_at, admin_email")
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -46,13 +50,13 @@ export async function paginateRiwayat(
     jenis_perubahan: string;
     ringkasan: string;
     created_at: string;
-    admin: { email: string } | null;
+    admin_email: string | null;
   }>;
 
   const hasMore = rows.length > limit;
   const page_data = rows.slice(0, limit).map((r) => ({
     id: r.id,
-    admin_email: r.admin?.email ?? "",
+    admin_email: r.admin_email ?? "",
     jenis_perubahan: r.jenis_perubahan,
     ringkasan: r.ringkasan,
     created_at: r.created_at,
