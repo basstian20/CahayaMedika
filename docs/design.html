@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klinik Cahaya Medika — Landing Page (design reference)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Figtree',system-ui,sans-serif;background:oklch(0.98 0.007 155);color:oklch(0.22 0.015 155)}
+  .slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .7s ease;background:repeating-linear-gradient(115deg, oklch(0.9 0.03 155), oklch(0.9 0.03 155) 14px, oklch(0.94 0.02 155) 14px, oklch(0.94 0.02 155) 28px);display:flex;align-items:center;justify-content:center}
+  .slide.active{opacity:1;pointer-events:auto}
+  .slide span{font-family:ui-monospace,monospace;font-size:13px;color:oklch(0.4 0.02 155);background:#fff;padding:8px 14px;border-radius:6px}
+  .dot{width:8px;height:8px;border-radius:50%;background:oklch(0.85 0.02 155);cursor:pointer;border:none;padding:0}
+  .dot.active{background:oklch(0.55 0.08 155)}
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;cursor:pointer;color:oklch(0.3 0.02 155);border:none}
+</style>
+</head>
+<body>
+
+<!-- header -->
+<div style="display:flex;align-items:center;justify-content:space-between;padding:22px 56px;border-bottom:1px solid oklch(0.9 0.01 155)">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:34px;height:34px;border-radius:50%;background:oklch(0.55 0.08 155)"></div>
+    <span style="font-size:19px;font-weight:700;letter-spacing:-0.01em">Cahaya Medika</span>
+  </div>
+  <nav style="display:flex;align-items:center;gap:36px;font-size:15px;font-weight:500;color:oklch(0.4 0.01 155)">
+    <a href="#layanan" style="color:inherit;text-decoration:none">Layanan</a>
+    <a href="#dokter" style="color:inherit;text-decoration:none">Dokter</a>
+    <a href="#jadwal" style="color:inherit;text-decoration:none">Jadwal</a>
+    <a href="#lokasi" style="color:inherit;text-decoration:none">Lokasi</a>
+  </nav>
+  <a href="https://wa.me/6280000000000" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;background:oklch(0.55 0.08 155);color:#fff;padding:11px 22px;border-radius:30px;font-weight:600;font-size:14.5px;text-decoration:none">
+    <span>💬</span><span>Chat WhatsApp</span>
+  </a>
+</div>
+
+<!-- hero -->
+<div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:0;align-items:center;padding:72px 56px 64px">
+  <div style="padding-right:40px">
+    <div style="display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:oklch(0.5 0.09 155);background:oklch(0.94 0.03 155);padding:7px 14px;border-radius:20px;margin-bottom:24px">Klinik Estetik &amp; Kecantikan · Sejak 2014</div>
+    <h1 style="font-size:56px;line-height:1.06;font-weight:800;letter-spacing:-0.02em;margin:0 0 22px">Kulit sehat, percaya diri terjaga — tanpa antre lama.</h1>
+    <p style="font-size:18px;line-height:1.6;color:oklch(0.45 0.01 155);max-width:480px;margin:0 0 34px">Konsultasi dermatologi, facial, dan perawatan estetik dengan dokter bersertifikat. Reservasi cukup lewat WhatsApp, langsung dijawab tim kami.</p>
+    <div style="display:flex;gap:14px">
+      <a href="https://wa.me/6280000000000" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:9px;background:oklch(0.55 0.08 155);color:#fff;padding:16px 28px;border-radius:10px;font-weight:700;font-size:16px;text-decoration:none">💬 Reservasi via WhatsApp</a>
+      <a href="#layanan" style="display:flex;align-items:center;gap:9px;border:1.5px solid oklch(0.8 0.01 155);padding:16px 28px;border-radius:10px;font-weight:600;font-size:16px;color:oklch(0.3 0.01 155);text-decoration:none">Lihat Layanan</a>
+    </div>
+  </div>
+
+  <!-- hero slideshow -->
+  <div id="hero-slideshow" style="position:relative;height:420px;border-radius:24px;overflow:hidden">
+    <div class="slide active" data-slide="0"><span>foto: interior treatment room</span></div>
+    <div class="slide" data-slide="1"><span>foto: konsultasi dengan dokter Sp.KK</span></div>
+    <div class="slide" data-slide="2"><span>foto: proses facial treatment</span></div>
+    <button class="arrow" id="prevSlide" style="left:14px" aria-label="Slide sebelumnya">‹</button>
+    <button class="arrow" id="nextSlide" style="right:14px" aria-label="Slide berikutnya">›</button>
+    <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px" id="dots">
+      <button class="dot active" data-dot="0" aria-label="Slide 1"></button>
+      <button class="dot" data-dot="1" aria-label="Slide 2"></button>
+      <button class="dot" data-dot="2" aria-label="Slide 3"></button>
+    </div>
+  </div>
+</div>
+
+<!-- trust badges -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid oklch(0.9 0.01 155);border-bottom:1px solid oklch(0.9 0.01 155)">
+  <div style="padding:28px 40px;border-right:1px solid oklch(0.9 0.01 155)"><div style="font-size:28px;font-weight:800;color:oklch(0.5 0.09 155)">2014</div><div style="font-size:14px;color:oklch(0.45 0.01 155);margin-top:4px">Melayani sejak</div></div>
+  <div style="padding:28px 40px;border-right:1px solid oklch(0.9 0.01 155)"><div style="font-size:28px;font-weight:800;color:oklch(0.5 0.09 155)">10.000+</div><div style="font-size:14px;color:oklch(0.45 0.01 155);margin-top:4px">Pasien dilayani</div></div>
+  <div style="padding:28px 40px;border-right:1px solid oklch(0.9 0.01 155)"><div style="font-size:28px;font-weight:800;color:oklch(0.5 0.09 155)">Sp.KK</div><div style="font-size:14px;color:oklch(0.45 0.01 155);margin-top:4px">Dokter bersertifikat</div></div>
+  <div style="padding:28px 40px"><div style="font-size:28px;font-weight:800;color:oklch(0.5 0.09 155)">09–20</div><div style="font-size:14px;color:oklch(0.45 0.01 155);margin-top:4px">Buka tiap hari</div></div>
+</div>
+
+<!-- services -->
+<div id="layanan" style="padding:64px 56px">
+  <div style="margin-bottom:32px">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:oklch(0.5 0.09 155);margin-bottom:10px">Layanan Unggulan</div>
+    <h2 style="font-size:32px;font-weight:800;margin:0;letter-spacing:-0.01em">Apa yang paling sering ditanyakan pasien baru</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+    <div style="border:1px solid oklch(0.9 0.01 155);border-radius:16px;padding:28px"><div style="width:44px;height:44px;border-radius:12px;background:oklch(0.94 0.03 155);margin-bottom:18px"></div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Konsultasi Kulit &amp; Dermatologi</div><div style="font-size:14.5px;color:oklch(0.45 0.01 155);line-height:1.5">Diagnosa masalah kulit langsung oleh dokter Sp.KK.</div></div>
+    <div style="border:1px solid oklch(0.9 0.01 155);border-radius:16px;padding:28px"><div style="width:44px;height:44px;border-radius:12px;background:oklch(0.94 0.03 155);margin-bottom:18px"></div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Facial &amp; Peremajaan Kulit</div><div style="font-size:14.5px;color:oklch(0.45 0.01 155);line-height:1.5">Perawatan rutin untuk kulit cerah dan sehat.</div></div>
+    <div style="border:1px solid oklch(0.9 0.01 155);border-radius:16px;padding:28px"><div style="width:44px;height:44px;border-radius:12px;background:oklch(0.94 0.03 155);margin-bottom:18px"></div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Perawatan Laser &amp; Akne</div><div style="font-size:14.5px;color:oklch(0.45 0.01 155);line-height:1.5">Atasi jerawat, bekas luka, dan flek membandel.</div></div>
+  </div>
+</div>
+
+<!-- status + contact -->
+<div id="jadwal" style="background:oklch(0.22 0.015 155);color:#fff;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:48px">
+  <div>
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px"><span style="width:9px;height:9px;border-radius:50%;background:oklch(0.72 0.14 145)"></span><span style="font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:oklch(0.72 0.14 145)">Buka Sekarang</span></div>
+    <div style="font-size:26px;font-weight:700;margin-bottom:10px">Senin–Minggu, 09.00–20.00</div>
+    <div id="lokasi" style="font-size:15px;color:oklch(0.75 0.01 155);line-height:1.6">Jl. Melati Indah No. 24, Bandung. Reservasi kapan saja lewat WhatsApp, kami balas dalam 15 menit.</div>
+  </div>
+  <div style="height:180px;border-radius:14px;background:repeating-linear-gradient(60deg, oklch(0.32 0.015 155), oklch(0.32 0.015 155) 12px, oklch(0.28 0.015 155) 12px, oklch(0.28 0.015 155) 24px);display:flex;align-items:center;justify-content:center">
+    <span style="font-family:ui-monospace,monospace;font-size:12.5px;color:oklch(0.8 0.01 155)">peta: embed lokasi klinik</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('#hero-slideshow .slide');
+  var dots = document.querySelectorAll('#dots .dot');
+  var current = 0, timer;
+  function show(i){
+    current = (i + slides.length) % slides.length;
+    slides.forEach(function(s,idx){ s.classList.toggle('active', idx===current); });
+    dots.forEach(function(d,idx){ d.classList.toggle('active', idx===current); });
+  }
+  function resetTimer(){
+    clearInterval(timer);
+    timer = setInterval(function(){ show(current+1); }, 4000);
+  }
+  document.getElementById('prevSlide').addEventListener('click', function(){ show(current-1); resetTimer(); });
+  document.getElementById('nextSlide').addEventListener('click', function(){ show(current+1); resetTimer(); });
+  dots.forEach(function(d,idx){ d.addEventListener('click', function(){ show(idx); resetTimer(); }); });
+  resetTimer();
+})();
+</script>
+</body>
+</html>

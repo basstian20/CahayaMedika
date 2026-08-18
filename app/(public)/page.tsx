@@ -61,12 +61,26 @@ export default async function HomePage() {
       )}
 
       {/* Header sticky — S1 */}
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-nakhoda/10 bg-latar/95 px-6 py-4 backdrop-blur">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-nakhoda/10 bg-latar/95 px-6 py-4 backdrop-blur">
         <span className="font-display text-lg font-semibold text-nakhoda">
           {klinikInfo?.nama ?? "Klinik Cahaya Medika"}
         </span>
+        <nav className="hidden items-center gap-6 text-sm font-medium text-nakhoda/70 md:flex">
+          <a href="#layanan" className="hover:text-nakhoda">
+            Layanan
+          </a>
+          <a href="#dokter" className="hover:text-nakhoda">
+            Dokter
+          </a>
+          <a href="#jadwal" className="hover:text-nakhoda">
+            Jadwal
+          </a>
+          <a href="#kontak" className="hover:text-nakhoda">
+            Kontak
+          </a>
+        </nav>
         {klinikInfo?.telepon && (
-          <a href={`tel:${klinikInfo.telepon}`} className="text-sm font-medium text-nakhoda">
+          <a href={`tel:${klinikInfo.telepon}`} className="whitespace-nowrap text-sm font-medium text-nakhoda">
             Tel: {klinikInfo.telepon}
           </a>
         )}
@@ -74,6 +88,11 @@ export default async function HomePage() {
 
       {/* Hero — S1 */}
       <section className="px-6 py-16 text-center md:py-24">
+        {klinikInfo?.tahun_berdiri && (
+          <span className="mb-6 inline-block rounded-full bg-cahaya/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-nakhoda">
+            Klinik Keluarga · Sejak {klinikInfo.tahun_berdiri}
+          </span>
+        )}
         <h1 className="mx-auto max-w-2xl font-display text-[32px] font-semibold leading-[1.15] text-nakhoda md:text-[44px] md:leading-[1.1]">
           Klinik Keluarga Terpercaya di {klinikInfo?.alamat?.split(",").pop()?.trim() ?? "Kota Anda"}
         </h1>
@@ -107,9 +126,13 @@ export default async function HomePage() {
           </h2>
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-1 md:grid-cols-3">
             {layanan.map((l) => (
-              <div key={l.id} className="rounded-xl bg-white p-6 shadow-card transition hover:shadow-lg">
+              <div
+                key={l.id}
+                className="rounded-xl border border-nakhoda/10 bg-white p-7 shadow-card transition hover:shadow-lg"
+              >
+                <div className="mb-4 h-11 w-11 rounded-xl bg-cahaya/10" aria-hidden />
                 <h3 className="mb-2 font-display text-lg font-semibold text-nakhoda">{l.nama}</h3>
-                <p className="text-sm text-nakhoda/70">{l.deskripsi}</p>
+                <p className="text-sm leading-relaxed text-nakhoda/70">{l.deskripsi}</p>
               </div>
             ))}
           </div>
@@ -118,14 +141,17 @@ export default async function HomePage() {
 
       {/* Badge Kepercayaan */}
       {klinikInfo && (
-        <section className="border-y border-nakhoda/10 bg-white px-6 py-8">
-          <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-2 text-center text-sm text-nakhoda/70 md:flex-row md:gap-8">
-            <span>Berdiri sejak {klinikInfo.tahun_berdiri}</span>
-            <span className="hidden md:inline">·</span>
-            <span className="font-mono tabular-nums">
-              Jam operasional: {formatJam(klinikInfo.jam_operasional_default.jam_mulai)}–
+        <section className="grid grid-cols-1 border-y border-nakhoda/10 sm:grid-cols-2">
+          <div className="border-b border-nakhoda/10 px-6 py-7 text-center sm:border-b-0 sm:border-r sm:text-left md:px-16">
+            <div className="font-display text-2xl font-extrabold text-cahaya">{klinikInfo.tahun_berdiri}</div>
+            <div className="mt-1 text-sm text-nakhoda/70">Melayani sejak</div>
+          </div>
+          <div className="px-6 py-7 text-center sm:text-left md:px-16">
+            <div className="font-mono text-2xl font-extrabold tabular-nums text-cahaya">
+              {formatJam(klinikInfo.jam_operasional_default.jam_mulai)}–
               {formatJam(klinikInfo.jam_operasional_default.jam_selesai)}
-            </span>
+            </div>
+            <div className="mt-1 text-sm text-nakhoda/70">Jam operasional</div>
           </div>
         </section>
       )}
@@ -140,7 +166,7 @@ export default async function HomePage() {
             {dokter.map((d) => (
               <div
                 key={d.id}
-                className="rounded-xl bg-white p-6 text-center shadow-card transition hover:shadow-lg"
+                className="rounded-xl border border-nakhoda/10 bg-white p-6 text-center shadow-card transition hover:shadow-lg"
               >
                 {d.foto_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -180,7 +206,7 @@ export default async function HomePage() {
           <h2 className="mb-8 text-center font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
             Jadwal Dokter Mingguan
           </h2>
-          <div className="mx-auto max-w-3xl overflow-x-auto rounded-xl bg-white shadow-card">
+          <div className="mx-auto max-w-3xl overflow-x-auto rounded-xl border border-nakhoda/10 bg-white shadow-card">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-nakhoda/10 text-xs uppercase text-nakhoda/50">
@@ -222,32 +248,30 @@ export default async function HomePage() {
       )}
 
       {/* Kontak & Lokasi — S4 */}
-      <section id="kontak" className="px-6 py-16">
-        <h2 className="mb-8 text-center font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
-          Kontak & Lokasi
-        </h2>
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
-          {klinikInfo?.alamat && <p className="text-nakhoda/70">{klinikInfo.alamat}</p>}
-          {klinikInfo && (
-            <iframe
-              title="Lokasi Klinik"
-              className="h-64 w-full rounded-xl border-0"
-              src={`https://www.google.com/maps?q=${klinikInfo.koordinat_lat},${klinikInfo.koordinat_lng}&output=embed`}
-              loading="lazy"
-            />
-          )}
-          <div className="flex flex-wrap justify-center gap-4">
+      <section id="kontak" className="grid grid-cols-1 gap-10 bg-nakhoda px-6 py-16 text-white md:grid-cols-2 md:px-16">
+        <div className="flex flex-col justify-center">
+          <h2 className="mb-4 font-display text-2xl font-semibold md:text-[32px]">Kontak & Lokasi</h2>
+          {klinikInfo?.alamat && <p className="mb-6 text-white/70">{klinikInfo.alamat}</p>}
+          <div className="flex flex-wrap gap-4">
             {nomorWhatsApp && <WhatsAppButton nomor={nomorWhatsApp} />}
             {klinikInfo?.telepon && (
               <a
                 href={`tel:${klinikInfo.telepon}`}
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-nakhoda px-6 py-3 font-medium text-nakhoda"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/40 px-6 py-3 font-medium text-white transition hover:border-white"
               >
                 Telepon Klinik
               </a>
             )}
           </div>
         </div>
+        {klinikInfo && (
+          <iframe
+            title="Lokasi Klinik"
+            className="h-64 w-full rounded-xl border-0 md:h-full md:min-h-[220px]"
+            src={`https://www.google.com/maps?q=${klinikInfo.koordinat_lat},${klinikInfo.koordinat_lng}&output=embed`}
+            loading="lazy"
+          />
+        )}
       </section>
 
       {/* Footer */}

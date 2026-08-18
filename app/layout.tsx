@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { Fraunces, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Figtree, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const figtree = Figtree({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["500", "600"],
-});
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-plus-jakarta-sans",
-  weight: ["400", "500"],
+  variable: "--font-figtree",
+  weight: ["400", "500", "600", "700", "800"],
 });
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -25,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${fraunces.variable} ${plusJakartaSans.variable} ${ibmPlexMono.variable}`}>
+    <html lang="id" className={`${figtree.variable} ${ibmPlexMono.variable}`}>
       <body className="bg-latar font-body text-nakhoda">{children}</body>
     </html>
   );

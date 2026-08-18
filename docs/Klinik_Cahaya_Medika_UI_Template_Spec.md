@@ -10,6 +10,8 @@
 | Tier Dokumen | Standard |
 | Status | Draft — Template Internal |
 
+> **Catatan revisi (2026-08-18):** Token warna, tipografi, dan radius di §3 disinkronkan dengan referensi desain eksternal `docs/design.html` (mock HTML high-fidelity yang di-upload user, lihat `docs/README.md` untuk konteksnya). **Bukan penggantian sistem token secara penuh** — nilai yang punya padanan langsung di `design.html` disinkronkan, nilai yang tidak punya padanan (state "Tutup", CTA WhatsApp, warna error) **dipertahankan** dari keputusan riset asli §2/§8 karena `design.html` tidak menyediakan data pengganti untuk itu (mock tersebut hanya mock marketing publik, tidak mencakup admin panel, tabel data, atau state "tutup"). Struktur 9 screen, elemen signature "Indikator Cahaya", dan strategi konten klinik keluarga (§1, §6) **tidak berubah** — `design.html` dibuat untuk konteks bisnis berbeda (klinik estetik/dermatologi) dan copy-nya sengaja tidak diadopsi, hanya token visual + pola layout (hero slideshow, trust badge strip) yang relevan.
+
 ---
 
 ## 1. Ringkasan Brief
@@ -52,39 +54,39 @@
 
 ### Warna
 
-| Nama Token | Hex | Peran | Alasan |
-|---|---|---|---|
-| `color-nakhoda` | `#1F3B3B` | Teks judul, header, warna dasar panel admin | Teal-tua-keabuan (bukan biru klinis dingin) — dipilih karena riset §2 menandai biru klinis sebagai kesan "steril" yang justru menurunkan rasa nyaman pasien cemas. Nama "nakhoda" (=pengemudi/pemandu) mencerminkan perannya sebagai warna "yang memandu" — dipakai di elemen yang harus terasa stabil dan bisa dipercaya. |
-| `color-cahaya` | `#E2963C` | Aksen utama, hover state, elemen signature (lihat §4), divider | Warna cahaya pagi (marigold hangat) — merujuk literal pada nama "Cahaya" di brand klinik, bukan aksen dekoratif acak. Dipakai terbatas (bukan warna dominan) supaya tetap jadi aksen, bukan kebisingan visual. |
-| `color-cta-whatsapp` | `#1E9E5A` | **Khusus** tombol CTA WhatsApp | Sengaja **tidak** memakai `color-cahaya` untuk CTA utama — hijau WhatsApp dipertahankan karena ini isyarat pengenalan instan ("tombol hijau + ikon WA = klik untuk chat") yang mengurangi friksi konversi (riset §2, Orbix Studio). Ini pengecualian yang disengaja, bukan kelalaian sistem token. |
-| `color-latar` | `#F1F4F2` | Latar belakang halaman | Putih hangat bertona teal-nakhoda 2% — dipilih **secara sadar berbeda** dari krem hangat `#F4F1EA` yang jadi default umum desain AI saat ini (lihat catatan kalibrasi `frontend-design`). Menautkan latar ke warna anchor, bukan krem generik. |
-| `color-jaga` | `#4C8C6B` | Status "Buka sekarang" (badge S3, dashboard admin) | Hijau sage yang **sengaja dibedakan** dari `color-cta-whatsapp` (walau sama-sama hijau) supaya badge status tidak tertukar makna dengan tombol WA — hijau lebih redup, lebih "status" daripada "aksi". |
-| `color-senja` | `#9C7A5B` | Status "Tutup" (badge S3), pesan non-urgent | Cokelat-tanah muted, bukan merah alarm — "tutup" bukan kondisi error/bahaya, jadi tidak memakai warna yang secara psikologis membaca sebagai peringatan darurat. |
+| Nama Token | Nilai (oklch, referensi desain) | Nilai (hex, implementasi Tailwind) | Peran | Alasan |
+|---|---|---|---|---|
+| `color-nakhoda` | `oklch(0.22 0.015 155)` | `#151D18` | Teks judul, header, warna dasar panel admin | **Disinkronkan ke `design.html`** (primary text / dark section bg pada mock tersebut). Tetap teal-gelap-netral (bukan biru klinis dingin), konsisten dengan rasional asli §2 (biru klinis = kesan "steril"). Perubahan dari `#1F3B3B` ke padanan oklch murni pergeseran ruang warna, peran token tidak berubah. |
+| `color-cahaya` | `oklch(0.55 0.08 155)` | `#497F5D` | Aksen utama, hover state, elemen signature (lihat §4), divider | **Disinkronkan ke `design.html`** (warna aksen tombol/logo pada mock). Catatan: `design.html` memakai hue sage-hijau untuk aksen ini (bukan amber seperti draf sebelumnya) — nama token "cahaya" dipertahankan sebagai peran (aksen utama yang merujuk brand), bukan literal warna cahaya pagi lagi. Dipakai terbatas, bukan warna dominan. |
+| `color-cta-whatsapp` | — | `#1E9E5A` | **Khusus** tombol CTA WhatsApp | **Dipertahankan, tidak disinkronkan** — `design.html` tidak punya token WA terpisah (tombol WA di mock itu memakai warna aksen umum yang sama dengan tombol lain). Rasional asli tetap berlaku: hijau WA yang dikenali instan mengurangi friksi konversi (riset §2, Orbix Studio); mengikuti `design.html` di sini justru akan menghapus pengecualian yang sengaja dan berdasar riset. |
+| `color-latar` | `oklch(0.98 0.007 155)` | `#F5FAF6` | Latar belakang halaman | **Disinkronkan ke `design.html`** (background halaman pada mock). Tetap putih hangat bertona teal-nakhoda, prinsip "ditautkan ke warna anchor, bukan krem generik" (§2) tidak berubah. |
+| `color-jaga` | `oklch(0.72 0.14 145)` | `#67BB6B` | Status "Buka sekarang" (badge S3, dashboard admin) | **Disinkronkan ke `design.html`** (warna dot status "BUKA SEKARANG" pada mock, hue 145 — sengaja berbeda dari `color-cahaya` hue 155 sehingga tetap terpisah secara visual dari aksen umum, konsisten dengan rasional asli "dibedakan dari CTA/aksen"). |
+| `color-senja` | — | `#9C7A5B` | Status "Tutup" (badge S3), pesan non-urgent | **Dipertahankan, tidak disinkronkan** — `design.html` adalah mock marketing yang hanya menunjukkan state "buka", tidak ada desain untuk state "tutup" untuk disinkronkan. Rasional asli tetap berlaku: cokelat-tanah muted, bukan merah alarm. |
 
-*(6 token warna bernama, sesuai batas 4–6 di kerangka spesifikasi.)*
+*(6 token warna bernama, sesuai batas 4–6 di kerangka spesifikasi. Nilai oklch dari `design.html` dikonversi ke hex sRGB untuk implementasi Tailwind — Tailwind 3.4.13 di proyek ini tidak resolve modifier opacity `/10`, `/70`, dst. dengan benar di atas string `oklch()` mentah pada custom color token, jadi hex tetap dipakai sebagai nilai implementasi; oklch dicatat sebagai referensi sumber desain.)*
 
 ### Tipografi
 
 | Peran | Typeface | Alasan pemilihan |
 |---|---|---|
-| Display | **Fraunces** (variable, optical size, weight 500–600) | Serif hangat dengan karakter humanis — membawa nuansa "keluarga/manusiawi" yang jadi arah riset 2026, tanpa jatuh ke serif tajam-korporat rumah sakit besar. Dipakai terbatas: headline hero dan judul section saja. |
-| Body | **Plus Jakarta Sans** (400/500) | Sans humanis dengan x-height tinggi dan dukungan glyph Latin-diakritik yang baik untuk konten Bahasa Indonesia — legible lintas usia (relevan karena demografi pasien klinik keluarga lintas generasi, PRD §7). Dibuat oleh studio Indonesia — kecocokan konteks lokal, bukan sekadar pilihan estetik. |
-| Utility/Data | **IBM Plex Mono** (500, tabular figures) | Dipakai khusus untuk data presisi: jam praktik di tabel jadwal (S3), timestamp di Riwayat Perubahan (S9), nomor telepon. Angka tabular menjaga kolom jam tetap rapi sejajar — dan secara visual menandai "ini data, bukan copy marketing", relevan untuk persona admin David yang skeptis pada hal "cantik tapi tidak fungsional". |
+| Display | **Figtree** (variable, weight 700–800) | **Disinkronkan ke `design.html`** (satu-satunya typeface di mock tersebut, dipakai bold/800 di H1). Menggantikan Fraunces — Figtree tetap sans humanis (bukan geometris-korporat), jadi arah "hangat/manusiawi" dari riset §2 tidak hilang, hanya berpindah dari pendekatan serif ke sans bold. Dipakai terbatas: headline hero dan judul section saja (peran tidak berubah). |
+| Body | **Figtree** (400/500/600) | **Disinkronkan ke `design.html`** — menggantikan Plus Jakarta Sans dengan typeface yang sama seperti display, mengikuti pendekatan satu-keluarga-font `design.html`. Figtree tetap punya x-height tinggi dan dukungan glyph Latin-diakritik baik untuk Bahasa Indonesia, jadi kriteria legibilitas lintas usia (PRD §7) tetap terpenuhi. |
+| Utility/Data | **IBM Plex Mono** (500, tabular figures) | **Dipertahankan, tidak disinkronkan** — `design.html` adalah mock marketing tanpa tabel data/timestamp untuk dijadikan pembanding. Tetap dipakai khusus untuk data presisi: jam praktik di tabel jadwal (S3), timestamp di Riwayat Perubahan (S9), nomor telepon — rasional asli (menandai "ini data, bukan copy marketing" untuk persona admin David) tidak berubah. |
 
 **Skala tipe** (mobile → desktop, mengikuti breakpoint PRD §7 360px/768px/1280px):
 
 | Level | Mobile (360px) | Desktop (1280px) | Weight |
 |---|---|---|---|
-| Display H1 (hero) | 32px / 1.15 | 44px / 1.1 | Fraunces 560 |
-| H2 (judul section) | 24px / 1.2 | 32px / 1.2 | Fraunces 540 |
-| Body | 16px / 1.6 | 17px / 1.6 | Plus Jakarta Sans 400 |
-| Body kecil/caption | 14px / 1.5 | 14px / 1.5 | Plus Jakarta Sans 400 — **tidak** dipakai untuk konten kritikal (CTA, status), hanya label pendukung, agar tidak melanggar minimum 16px NFR untuk teks utama |
+| Display H1 (hero) | 32px / 1.15 | 44px / 1.1 | Figtree 800 |
+| H2 (judul section) | 24px / 1.2 | 32px / 1.2 | Figtree 700 |
+| Body | 16px / 1.6 | 17px / 1.6 | Figtree 400 |
+| Body kecil/caption | 14px / 1.5 | 14px / 1.5 | Figtree 400 — **tidak** dipakai untuk konten kritikal (CTA, status), hanya label pendukung, agar tidak melanggar minimum 16px NFR untuk teks utama |
 | Data/mono | 15px / 1.4, tabular-nums | 15px / 1.4 | IBM Plex Mono 500 |
 
 ### Spacing, Radius, Shadow
 
 - **Spacing scale** (basis 4px): 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64px — dipakai konsisten untuk padding section (mobile: 24px horizontal, desktop: 64px) dan jarak antar-elemen kartu (16px internal).
-- **Radius**: 12px untuk kartu, tombol, dan input (`rounded-xl`) — cukup lunak untuk terasa hangat/manusiawi, sengaja **tidak** memakai bentuk blob/organik penuh yang jadi tren dekoratif 2026 (SpreadSimple), karena admin panel butuh elemen tabel/form yang presisi, dan konsistensi satu sistem radius di kedua register lebih penting daripada mengejar tren dekoratif publik saja.
+- **Radius**: 16px untuk kartu, tombol, dan input (`rounded-xl`) — **disinkronkan sebagian ke `design.html`** (mock tersebut memakai radius bervariasi 10–30px tergantung elemen: tombol 10px, kartu 16–24px, pill 20–30px). Titik tengah 16px dipilih, **bukan** mengikuti radius berbeda per jenis elemen seperti `design.html` — satu radius konsisten tetap dipertahankan karena admin panel butuh elemen tabel/form presisi (jadwal, log), dan `design.html` sendiri tidak mencakup admin panel sehingga tidak ada data pembanding untuk itu. Tetap sengaja **tidak** memakai bentuk blob/organik penuh.
 - **Shadow**: satu level elevation lembut (`0 2px 8px rgba(31,59,59,0.08)`) untuk kartu di atas `color-latar` — dihindari shadow berlapis/neumorphism yang menambah kesan ramai.
 
 ### Motion
@@ -264,6 +266,7 @@ Uji kalibrasi (§SKILL.md langkah 3): jika brief serupa datang dari klinik lain 
 - **Dipertimbangkan memakai bentuk blob/organik penuh** (tren 2026 yang muncul di riset §2, SpreadSimple) untuk membedakan dari kesan klinis. **Ditolak** karena admin panel butuh elemen tabel/form presisi (jadwal, log) — bentuk organik penuh akan berbenturan dengan kebutuhan fungsional tabel jam praktik. Radius lunak 12px dipertahankan sebagai kompromi yang konsisten di kedua register, tanpa mengorbankan presisi tabel.
 - **Dipertimbangkan memakai `color-cahaya` (amber) untuk tombol CTA WhatsApp juga**, demi konsistensi brand penuh. **Ditolak secara sadar** (lihat §3, baris `color-cta-whatsapp`) — riset §2 menunjukkan pengenalan visual instan "hijau WA" mengurangi friksi konversi, dan itu lebih penting untuk CTA utama daripada konsistensi palet murni. Dicatat eksplisit sebagai pengecualian yang disengaja, bukan inkonsistensi yang terlewat.
 - **Warna error form** awalnya hendak memakai `color-senja` (yang juga dipakai untuk status "tutup"). Direvisi ke merah error terpisah di luar 6 token utama (§5, Input Form) karena "tutup" dan "kesalahan input" adalah dua makna yang sangat berbeda secara fungsional — memakai warna yang sama berisiko admin salah baca tingkat urgensi.
+- **Revisi sinkronisasi dengan `design.html` (2026-08-18)**: user meng-upload mock desain eksternal dan meminta token disinkronkan. Dipertimbangkan untuk mengadopsi `design.html` secara penuh (termasuk konten estetik/dermatologi, radius per-elemen, dan CTA WA yang memakai warna aksen umum). **Ditolak sebagian** — hanya token yang punya padanan langsung di `design.html` (warna latar/teks/aksen/status-buka, typeface tunggal Figtree) yang disinkronkan; token tanpa padanan (CTA WA, status tutup, error) dan keputusan struktural yang punya rasional fungsional independen (radius tunggal untuk presisi tabel admin, IBM Plex Mono untuk data, struktur konten klinik keluarga) dipertahankan. Ini konsisten dengan prinsip dokumen ini: skill/referensi desain eksternal adalah masukan yang dievaluasi, bukan otoritas yang menimpa keputusan berdasar riset tanpa pertimbangan (lihat CLAUDE.md §2.3).
 
 ---
 
