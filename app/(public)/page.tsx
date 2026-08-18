@@ -6,6 +6,8 @@ import {
 } from "@/lib/modules/klinik-info/klinik-info.repository";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
 import { KlinikStatusBadge } from "@/components/public/KlinikStatusBadge";
+import { KlinikStatusPanel } from "@/components/public/KlinikStatusPanel";
+import { HeroVisual } from "@/components/public/HeroVisual";
 
 const HARI_LABEL: Record<string, string> = {
   senin: "Senin",
@@ -62,9 +64,12 @@ export default async function HomePage() {
 
       {/* Header sticky — S1 */}
       <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-nakhoda/10 bg-latar/95 px-6 py-4 backdrop-blur">
-        <span className="font-display text-lg font-semibold text-nakhoda">
-          {klinikInfo?.nama ?? "Klinik Cahaya Medika"}
-        </span>
+        <div className="flex items-center gap-2.5">
+          <span className="h-8 w-8 rounded-full bg-cahaya" aria-hidden />
+          <span className="font-display text-lg font-semibold text-nakhoda">
+            {klinikInfo?.nama ?? "Klinik Cahaya Medika"}
+          </span>
+        </div>
         <nav className="hidden items-center gap-6 text-sm font-medium text-nakhoda/70 md:flex">
           <a href="#layanan" className="hover:text-nakhoda">
             Layanan
@@ -79,51 +84,68 @@ export default async function HomePage() {
             Kontak
           </a>
         </nav>
-        {klinikInfo?.telepon && (
-          <a href={`tel:${klinikInfo.telepon}`} className="whitespace-nowrap text-sm font-medium text-nakhoda">
-            Tel: {klinikInfo.telepon}
-          </a>
-        )}
+        <div className="flex items-center gap-4">
+          {klinikInfo?.telepon && (
+            <a
+              href={`tel:${klinikInfo.telepon}`}
+              className="hidden whitespace-nowrap text-sm font-medium text-nakhoda md:inline"
+            >
+              Tel: {klinikInfo.telepon}
+            </a>
+          )}
+          {nomorWhatsApp && <WhatsAppButton nomor={nomorWhatsApp} size="compact" label="Chat WhatsApp" />}
+        </div>
       </header>
 
       {/* Hero — S1 */}
-      <section className="px-6 py-16 text-center md:py-24">
-        {klinikInfo?.tahun_berdiri && (
-          <span className="mb-6 inline-block rounded-full bg-cahaya/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-nakhoda">
-            Klinik Keluarga · Sejak {klinikInfo.tahun_berdiri}
-          </span>
-        )}
-        <h1 className="mx-auto max-w-2xl font-display text-[32px] font-semibold leading-[1.15] text-nakhoda md:text-[44px] md:leading-[1.1]">
-          Klinik Keluarga Terpercaya di {klinikInfo?.alamat?.split(",").pop()?.trim() ?? "Kota Anda"}
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base text-nakhoda/70 md:text-[17px]">
-          Melayani kebutuhan kesehatan keluarga Anda dengan tenaga medis berpengalaman.
-        </p>
+      <section className="grid gap-10 px-6 py-16 md:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14 lg:px-16">
+        <div>
+          {klinikInfo?.tahun_berdiri && (
+            <span className="mb-6 inline-block rounded-full bg-cahaya/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-nakhoda">
+              Klinik Keluarga · Sejak {klinikInfo.tahun_berdiri}
+            </span>
+          )}
+          <h1 className="max-w-xl font-display text-[32px] font-semibold leading-[1.15] text-nakhoda md:text-[44px] md:leading-[1.1]">
+            Klinik Keluarga Terpercaya di {klinikInfo?.alamat?.split(",").pop()?.trim() ?? "Kota Anda"}
+          </h1>
+          <p className="mt-4 max-w-lg text-base text-nakhoda/70 md:text-[17px]">
+            Melayani kebutuhan kesehatan keluarga Anda dengan tenaga medis berpengalaman.
+          </p>
 
-        <div className="mt-6 flex justify-center">
-          <KlinikStatusBadge
-            jadwalMingguIni={jadwal.map((j) => ({
-              hari: j.hari,
-              jam_mulai: j.jam_mulai.slice(0, 5),
-              jam_selesai: j.jam_selesai.slice(0, 5),
-            }))}
-            jamOperasionalDefault={klinikInfo?.jam_operasional_default}
-          />
+          <div className="mt-6">
+            <KlinikStatusBadge
+              jadwalMingguIni={jadwal.map((j) => ({
+                hari: j.hari,
+                jam_mulai: j.jam_mulai.slice(0, 5),
+                jam_selesai: j.jam_selesai.slice(0, 5),
+              }))}
+              jamOperasionalDefault={klinikInfo?.jam_operasional_default}
+            />
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            {nomorWhatsApp && <WhatsAppButton nomor={nomorWhatsApp} />}
+            <a
+              href="#layanan"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-nakhoda/20 px-6 py-3 font-medium text-nakhoda transition hover:border-nakhoda/40"
+            >
+              Lihat Layanan
+            </a>
+          </div>
         </div>
 
-        {nomorWhatsApp && (
-          <div className="mt-8">
-            <WhatsAppButton nomor={nomorWhatsApp} />
-          </div>
-        )}
+        <HeroVisual />
       </section>
 
       {/* Ringkasan Layanan — S2 */}
       {layanan.length > 0 && (
-        <section id="layanan" className="px-6 py-16">
-          <h2 className="mb-8 text-center font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
-            Layanan Kami
-          </h2>
+        <section id="layanan" className="px-6 py-16 md:px-16">
+          <div className="mx-auto mb-8 max-w-5xl">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-cahaya">Layanan Unggulan</div>
+            <h2 className="font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
+              Apa yang paling sering dibutuhkan keluarga Anda
+            </h2>
+          </div>
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-1 md:grid-cols-3">
             {layanan.map((l) => (
               <div
@@ -139,14 +161,26 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Badge Kepercayaan */}
+      {/* Badge Kepercayaan — strip 4 kolom ala docs/design.html. Portofolio
+          ilustratif (CLAUDE.md §0): "Pasien dilayani" statis/ilustratif atas
+          persetujuan eksplisit, sisanya dihitung dari data asli (dokter.length,
+          tahun_berdiri, jam_operasional_default) — tidak ada angka mengarang
+          di luar satu kolom itu. */}
       {klinikInfo && (
-        <section className="grid grid-cols-1 border-y border-nakhoda/10 sm:grid-cols-2">
-          <div className="border-b border-nakhoda/10 px-6 py-7 text-center sm:border-b-0 sm:border-r sm:text-left md:px-16">
+        <section className="grid grid-cols-2 border-y border-nakhoda/10 md:grid-cols-4">
+          <div className="border-b border-r border-nakhoda/10 px-6 py-7 md:border-b-0 md:px-10">
             <div className="font-display text-2xl font-extrabold text-cahaya">{klinikInfo.tahun_berdiri}</div>
             <div className="mt-1 text-sm text-nakhoda/70">Melayani sejak</div>
           </div>
-          <div className="px-6 py-7 text-center sm:text-left md:px-16">
+          <div className="border-b border-nakhoda/10 px-6 py-7 md:border-b-0 md:border-r md:px-10">
+            <div className="font-display text-2xl font-extrabold text-cahaya">500+</div>
+            <div className="mt-1 text-sm text-nakhoda/70">Pasien dilayani</div>
+          </div>
+          <div className="border-r border-nakhoda/10 px-6 py-7 md:px-10">
+            <div className="font-display text-2xl font-extrabold text-cahaya">{dokter.length}</div>
+            <div className="mt-1 text-sm text-nakhoda/70">Dokter berpengalaman</div>
+          </div>
+          <div className="px-6 py-7 md:px-10">
             <div className="font-mono text-2xl font-extrabold tabular-nums text-cahaya">
               {formatJam(klinikInfo.jam_operasional_default.jam_mulai)}–
               {formatJam(klinikInfo.jam_operasional_default.jam_selesai)}
@@ -158,10 +192,11 @@ export default async function HomePage() {
 
       {/* Profil Dokter — S2 (grid kartu foto + nama + spesialisasi, Wireframe §S2) */}
       {dokter.length > 0 && (
-        <section id="dokter" className="px-6 py-16">
-          <h2 className="mb-8 text-center font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
-            Tenaga Medis Kami
-          </h2>
+        <section id="dokter" className="px-6 py-16 md:px-16">
+          <div className="mx-auto mb-8 max-w-5xl">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-cahaya">Tenaga Medis</div>
+            <h2 className="font-display text-2xl font-semibold text-nakhoda md:text-[32px]">Dokter kami</h2>
+          </div>
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 md:grid-cols-3">
             {dokter.map((d) => (
               <div
@@ -202,10 +237,11 @@ export default async function HomePage() {
 
       {/* Jadwal Dokter Mingguan — S3 */}
       {dokter.length > 0 && (
-        <section id="jadwal" className="px-6 py-16">
-          <h2 className="mb-8 text-center font-display text-2xl font-semibold text-nakhoda md:text-[32px]">
-            Jadwal Dokter Mingguan
-          </h2>
+        <section id="jadwal" className="px-6 py-16 md:px-16">
+          <div className="mx-auto mb-8 max-w-3xl">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-cahaya">Jam Praktik</div>
+            <h2 className="font-display text-2xl font-semibold text-nakhoda md:text-[32px]">Jadwal Dokter Mingguan</h2>
+          </div>
           <div className="mx-auto max-w-3xl overflow-x-auto rounded-xl border border-nakhoda/10 bg-white shadow-card">
             <table className="w-full text-left text-sm">
               <thead>
@@ -250,6 +286,14 @@ export default async function HomePage() {
       {/* Kontak & Lokasi — S4 */}
       <section id="kontak" className="grid grid-cols-1 gap-10 bg-nakhoda px-6 py-16 text-white md:grid-cols-2 md:px-16">
         <div className="flex flex-col justify-center">
+          <KlinikStatusPanel
+            jadwalMingguIni={jadwal.map((j) => ({
+              hari: j.hari,
+              jam_mulai: j.jam_mulai.slice(0, 5),
+              jam_selesai: j.jam_selesai.slice(0, 5),
+            }))}
+            jamOperasionalDefault={klinikInfo?.jam_operasional_default}
+          />
           <h2 className="mb-4 font-display text-2xl font-semibold md:text-[32px]">Kontak & Lokasi</h2>
           {klinikInfo?.alamat && <p className="mb-6 text-white/70">{klinikInfo.alamat}</p>}
           <div className="flex flex-wrap gap-4">
