@@ -5,6 +5,29 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 ### Added
+- Homepage publik: hero dipecah jadi grid 2 kolom (teks + panel visual) mengikuti pola
+  `docs/design.html`, dengan CTA sekunder "Lihat Layanan" mendampingi CTA WhatsApp utama
+  (UI Template Spec §5 Tombol Sekunder).
+- Panel visual hero jadi slideshow fasilitas layanan (`components/public/HeroSlideshow.tsx`,
+  4 slide ilustratif — ruang tunggu, konsultasi, bermain anak, apotek), atas instruksi
+  eksplisit pemilik proyek untuk menaikkan kesan meyakinkan halaman portofolio. Auto-rotate
+  4.5s adalah pengecualian motion kedua di luar glow Indikator Cahaya — dicatat sebagai
+  revisi eksplisit di UI Template Spec §3 Motion, berhenti otomatis saat pointer/fokus di
+  atas panel dan saat `prefers-reduced-motion` aktif. Navigasi panah + dot semuanya
+  bertarget sentuh 44×44px (UI Template Spec §7).
+- Badge kepercayaan diperluas dari 2 ke 4 kolom (strip berbingkai ala `design.html`): tahun
+  berdiri, jumlah dokter, dan jam operasional dihitung dari data asli; "500+ Pasien dilayani"
+  ditambahkan sebagai angka ilustratif khusus konteks portofolio (CLAUDE.md §0 — bukan proyek
+  klien nyata), disetujui eksplisit oleh pemilik proyek.
+- Section Layanan/Dokter/Jadwal dapat eyebrow label + heading rata kiri, konsisten dengan pola
+  section header `design.html`.
+- Section Kontak & Lokasi (S4) dapat `components/public/KlinikStatusPanel.tsx` — Indikator
+  Cahaya + jam praktik hari ini ditampilkan besar di atas latar gelap, meniru blok status di
+  `design.html`. `IndikatorCahaya` dapat prop `onDark` baru karena ini pemakaian pertama
+  elemen signature ini di atas latar gelap (dot/glow tidak berubah, hanya warna label teks).
+- Header dapat CTA WhatsApp pill compact (`WhatsAppButton` prop `size`/`label` baru) di
+  sebelah nomor telepon, supaya konversi tetap mudah tanpa scroll — nomor telepon disembunyikan
+  di breakpoint mobile (`md:inline`) supaya header tidak sesak.
 - Homepage publik: section "Tenaga Medis Kami" (grid kartu foto + nama + spesialisasi dokter),
   melengkapi S2 yang sudah didefinisikan di Wireframe tapi belum diimplementasikan.
 - QA visual & aksesibilitas dengan Playwright (CLAUDE.md §9): `.mcp.json` registrasi Playwright

@@ -6,11 +6,12 @@ import { IndikatorCahaya } from "./IndikatorCahaya";
 interface KlinikStatusBadgeProps {
   jadwalMingguIni: { hari: string; jam_mulai: string; jam_selesai: string }[];
   jamOperasionalDefault?: { jam_mulai: string; jam_selesai: string };
+  onDark?: boolean;
 }
 
 // Client wrapper — Server Component page.tsx query data mentah jadwal,
 // status buka/tutup dihitung di sini (client-side, TSD §3.3).
-export function KlinikStatusBadge({ jadwalMingguIni, jamOperasionalDefault }: KlinikStatusBadgeProps) {
+export function KlinikStatusBadge({ jadwalMingguIni, jamOperasionalDefault, onDark }: KlinikStatusBadgeProps) {
   const { status } = useKlinikStatus(jadwalMingguIni, jamOperasionalDefault);
-  return <IndikatorCahaya status={status} />;
+  return <IndikatorCahaya status={status} onDark={onDark} />;
 }
