@@ -7,7 +7,7 @@ import {
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
 import { KlinikStatusBadge } from "@/components/public/KlinikStatusBadge";
 import { KlinikStatusPanel } from "@/components/public/KlinikStatusPanel";
-import { HeroVisual } from "@/components/public/HeroVisual";
+import { HeroSlideshow } from "@/components/public/HeroSlideshow";
 
 const HARI_LABEL: Record<string, string> = {
   senin: "Senin",
@@ -134,7 +134,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <HeroVisual />
+        <HeroSlideshow />
       </section>
 
       {/* Ringkasan Layanan — S2 */}

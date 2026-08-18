@@ -7,10 +7,14 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 ### Added
 - Homepage publik: hero dipecah jadi grid 2 kolom (teks + panel visual) mengikuti pola
   `docs/design.html`, dengan CTA sekunder "Lihat Layanan" mendampingi CTA WhatsApp utama
-  (UI Template Spec §5 Tombol Sekunder). Panel visual (`components/public/HeroVisual.tsx`)
-  sengaja statis/dekoratif token-based, bukan slideshow carousel seperti mock aslinya —
-  slideshow otomatis akan jadi motion kedua di luar satu-satunya animasi yang dikunci sistem
-  (glow Indikator Cahaya, UI Template Spec §3 Motion).
+  (UI Template Spec §5 Tombol Sekunder).
+- Panel visual hero jadi slideshow fasilitas layanan (`components/public/HeroSlideshow.tsx`,
+  4 slide ilustratif — ruang tunggu, konsultasi, bermain anak, apotek), atas instruksi
+  eksplisit pemilik proyek untuk menaikkan kesan meyakinkan halaman portofolio. Auto-rotate
+  4.5s adalah pengecualian motion kedua di luar glow Indikator Cahaya — dicatat sebagai
+  revisi eksplisit di UI Template Spec §3 Motion, berhenti otomatis saat pointer/fokus di
+  atas panel dan saat `prefers-reduced-motion` aktif. Navigasi panah + dot semuanya
+  bertarget sentuh 44×44px (UI Template Spec §7).
 - Badge kepercayaan diperluas dari 2 ke 4 kolom (strip berbingkai ala `design.html`): tahun
   berdiri, jumlah dokter, dan jam operasional dihitung dari data asli; "500+ Pasien dilayani"
   ditambahkan sebagai angka ilustratif khusus konteks portofolio (CLAUDE.md §0 — bukan proyek

@@ -92,8 +92,9 @@
 ### Motion
 
 - **Default: tanpa animasi berlebih** — ini keputusan sadar, bukan kelalaian, mengikuti prinsip restraint `frontend-design` (animasi berlebihan justru jadi salah satu penanda "terlihat dibuat AI").
-- **Satu pengecualian bertujuan**: glow halus pada badge status "Buka sekarang" (lihat §4 Signature) — durasi 2.4s, easing `ease-in-out`, breathing opacity 0.7↔1.0. Ini satu-satunya motion di seluruh sistem, dan langsung terhubung ke fungsi (menandakan status "hidup/real-time"), bukan dekorasi lepas.
-- **`prefers-reduced-motion`**: glow diganti halo statis solid (opacity 1.0 tetap), tidak ada elemen lain yang bergantung pada motion untuk menyampaikan informasi.
+- **Pengecualian bertujuan #1**: glow halus pada badge status "Buka sekarang" (lihat §4 Signature) — durasi 2.4s, easing `ease-in-out`, breathing opacity 0.7↔1.0. Langsung terhubung ke fungsi (menandakan status "hidup/real-time"), bukan dekorasi lepas.
+- **Pengecualian bertujuan #2 (revisi 2026-08-18, instruksi eksplisit pemilik proyek)**: auto-rotate pada slideshow fasilitas layanan di hero (`components/public/HeroSlideshow.tsx`) — interval 4.5s, transisi opacity 700ms. Awalnya panel hero didesain statis justru supaya glow Indikator Cahaya tetap jadi satu-satunya motion; direvisi setelah pemilik proyek secara eksplisit meminta slideshow foto fasilitas untuk menaikkan kesan meyakinkan halaman portofolio ini (CLAUDE.md §0). Auto-rotate berhenti saat pointer/fokus di atas panel, dan saat `prefers-reduced-motion` aktif (lihat baris di bawah) — supaya tetap konsisten dengan prinsip restraint di atas selama tidak benar-benar dibutuhkan pengunjung.
+- **`prefers-reduced-motion`**: glow diganti halo statis solid (opacity 1.0 tetap); slideshow hero berhenti auto-rotate (berhenti di slide yang sedang tampil, navigasi manual lewat tombol panah/dot tetap berfungsi) — tidak ada informasi yang hilang di kedua kasus.
 
 ---
 
