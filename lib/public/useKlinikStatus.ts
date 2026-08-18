@@ -12,6 +12,26 @@ type StatusKlinik = "buka" | "tutup";
 
 const HARI_INDEX = ["minggu", "senin", "selasa", "rabu", "kamis", "jumat", "sabtu"];
 
+// "Jam operasional klinik" hari itu = rentang gabungan (jam_mulai TERAWAL,
+// jam_selesai TERAKHIR) dari semua dokter yang praktik hari itu — bukan jadwal
+// satu dokter yang kebetulan match duluan. Perbandingan string "HH:mm" aman
+// karena selalu zero-padded (sama seperti perbandingan jamSekarang di bawah).
+// Trade-off yang disadari: kalau ada celah kosong antar jam praktik dokter
+// (mis. dokter A pagi, dokter B sore), rentang gabungan ini tidak menandai
+// celah itu sebagai "tutup" — direct simplification yang sudah dikonfirmasi user.
+function gabungkanJadwalHari(rows: JadwalHari[], hari: string): JadwalHari | null {
+  const rowsHariIni = rows.filter((j) => j.hari === hari);
+  if (rowsHariIni.length === 0) return null;
+
+  const jamMulai = rowsHariIni.reduce((min, j) => (j.jam_mulai < min ? j.jam_mulai : min), rowsHariIni[0].jam_mulai);
+  const jamSelesai = rowsHariIni.reduce(
+    (max, j) => (j.jam_selesai > max ? j.jam_selesai : max),
+    rowsHariIni[0].jam_selesai
+  );
+
+  return { hari, jam_mulai: jamMulai, jam_selesai: jamSelesai };
+}
+
 // WAJIB Asia/Jakarta di-hardcode — TIDAK BOLEH pakai timezone browser
 // pengunjung (TSD §10, mitigasi risiko TSD §9 baris ke-2: "bug timezone").
 function getJakartaNow(): Date {
@@ -42,7 +62,7 @@ export function useKlinikStatus(
         jakartaNow.getMinutes()
       ).padStart(2, "0")}`;
 
-      const jadwalHariIni = jadwalMingguIni.find((j) => j.hari === hariIni) ?? null;
+      const jadwalHariIni = gabungkanJadwalHari(jadwalMingguIni, hariIni);
 
       // State Empty: fallback ke jam_operasional_default kalau jadwal minggu
       // ini belum diisi admin (TSD §5.3).
