@@ -1,11 +1,58 @@
 # Klinik Cahaya Medika
 
 Landing page satu halaman + panel admin ringan untuk klinik keluarga fiktif "Klinik Cahaya
-Medika". Studi kasus ilustratif/template internal NobleDev — dipakai sebagai template
-dokumentasi yang bisa direplikasi untuk klien SME sejenis (klinik, bimbel, biro jasa), bukan
-proyek klien nyata.
+Medika". **Studi kasus ilustratif/template internal NobleDev** — dibangun sebagai contoh
+end-to-end untuk proyek web SME (klinik, bimbel, biro jasa): dari dokumen scoping (PRD/SOW)
+sampai kode produksi, bukan proyek klien nyata.
 
-**Status:** Draft — Template Internal
+**Status:** Draft — Template Internal · lihat [Status Proyek](#status-proyek--yang-masih-terbuka) di bawah untuk apa yang sudah dan belum selesai.
+
+## Kenapa proyek ini ada
+
+Sebagian besar contoh portofolio berhenti di "kode yang jalan". Proyek ini sengaja dipakai
+untuk mendemonstrasikan hal lain: **bagaimana satu developer solo membawa proyek SME dari
+dokumen kebutuhan mentah ke kode yang bisa diaudit orang lain tanpa perlu bertanya**, dengan
+rantai keputusan yang tertelusuri secara end-to-end:
+
+1. **10 dokumen sumber berurutan** (`docs/`) — PRD → SOW → wireframe → tech spec → blueprint
+   backend → spec endpoint → design token → frontend logic — setiap revisi di satu dokumen
+   di-backport eksplisit ke dokumen lain yang bergantung padanya, bukan dibiarkan drift diam-diam.
+2. **Kode yang mengikuti dokumennya secara harfiah** — struktur folder, kontrak API, dan token
+   desain di kode ini bisa ditelusuri balik ke section spesifik di `docs/` (lihat pesan commit
+   di `git log`, tiap fitur menyebut dokumen rujukannya).
+3. **Keputusan arsitektur dengan alasan tertulis, bukan cuma pilihan** — mis. kenapa write
+   jadwal+riwayat lewat satu Postgres RPC (atomicity), kenapa RLS jadi lapisan otorisasi utama
+   bukan cuma pemeriksaan aplikasi, kenapa guard di frontend cuma UX bukan keamanan.
+
+## Sorotan Teknis
+
+- **Next.js 14 App Router** dengan SSG + on-demand ISR untuk halaman publik (bukan
+  time-based revalidation) — di-trigger manual lewat `revalidatePath()` setelah tiap write
+  admin sukses.
+- **Supabase RLS sebagai lapisan otorisasi utama** — repository write modul bisnis pakai
+  session-scoped client (`authenticated`), bukan `service_role`, supaya RLS tidak ter-bypass.
+- **Atomic write lintas tabel via Postgres function** (`fn_update_jadwal_dan_riwayat`, dipanggil
+  lewat `.rpc()`) — menghindari window inkonsistensi yang muncul kalau `jadwal_praktik` dan
+  `riwayat_perubahan` ditulis lewat dua `.insert()` client terpisah.
+- **Design system dengan token terdokumentasi** (`docs/Klinik_Cahaya_Medika_UI_Template_Spec.md`)
+  — bukan warna/spacing ad-hoc, termasuk elemen signature "Indikator Cahaya" (badge status
+  buka/tutup custom, bukan traffic-light generik).
+- **Module-based architecture** (`lib/modules/<nama-modul>/{*.schema,*.service,*.repository,*.types}.ts`)
+  konsisten di 5 modul bisnis (jadwal, layanan, dokter, riwayat, klinik-info).
+
+## Status Proyek — Yang Masih Terbuka
+
+Ditulis apa adanya, karena itu bagian dari cara kerja proyek ini (lihat CLAUDE.md §7):
+
+- **Belum ada live demo/deploy** — `next build` butuh kredensial Supabase project nyata karena
+  homepage di-SSG dengan query DB saat build (lihat catatan di bawah). Belum di-deploy + belum
+  diisi data contoh.
+- **Test suite formal (unit/integration) belum ditulis** — ini keputusan sadar dengan trigger
+  eksplisit ("mulai begitu scope proyek bertambah di luar MVP"), bukan terlewat. Lihat
+  `docs/Klinik_Cahaya_Medika_Frontend_Logic.md` bagian "Item yang Tetap Terbuka" untuk skeleton
+  test case yang sudah disiapkan.
+- **QA visual/aksesibilitas via Playwright** sedang disiapkan (`tests/`, lihat CLAUDE.md §9) —
+  cakupannya sengaja lebih sempit dari test suite formal di atas.
 
 ## Tech Stack
 
@@ -46,6 +93,18 @@ Vercel Preview/Production sudah punya env var ini ter-scope per environment (CLA
 - `supabase/migrations/` — migrasi SQL berurutan
 
 Detail lengkap: [`docs/Klinik_Cahaya_Medika_Backend_Blueprint.md`](./docs/Klinik_Cahaya_Medika_Backend_Blueprint.md) §3.
+
+## QA & Testing
+
+```bash
+npx playwright install   # sekali saja, download browser binaries
+npm run test:a11y        # jalankan test aksesibilitas/visual (butuh npm run dev di terminal lain)
+npm run typecheck        # type check tanpa perlu next build penuh (tidak butuh kredensial Supabase)
+```
+
+Playwright dipakai untuk QA visual & aksesibilitas (kontras warna, target sentuh 44×44px,
+breakpoint) sesuai kebijakan CLAUDE.md §9 — **bukan** pengganti test suite bisnis-logic formal
+yang statusnya masih sengaja terbuka (lihat [Status Proyek](#status-proyek--yang-masih-terbuka)).
 
 ## Dokumentasi
 
