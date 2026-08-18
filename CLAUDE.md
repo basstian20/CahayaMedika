@@ -59,19 +59,21 @@ Delapan dokumen ini adalah **satu rantai keputusan berurutan** — masing-masing
 
 ### 2.2 Design system (UI Template Spec — otoritatif untuk seluruh keputusan visual)
 
-**Jangan improvisasi warna/font/spacing baru.** Token di bawah ini final, sudah melalui proses riset + self-critique (UI Template Spec §2, §8) — kalau terasa ada token yang hilang untuk kebutuhan baru, cek dulu apakah itu genuinely kebutuhan baru atau bisa dipetakan ke token yang sudah ada.
+**Jangan improvisasi warna/font/spacing baru.** Token di bawah ini final, sudah melalui proses riset + self-critique (UI Template Spec §2, §8), dan disinkronkan sebagian dengan referensi desain eksternal `docs/design.html` per revisi 2026-08-18 (lihat UI Template Spec, catatan revisi di bagian atas dokumen + §8) — kalau terasa ada token yang hilang untuk kebutuhan baru, cek dulu apakah itu genuinely kebutuhan baru atau bisa dipetakan ke token yang sudah ada.
 
-| Token warna | Hex | Peran |
+| Token warna | Hex (implementasi Tailwind) | Peran |
 |---|---|---|
-| `color-nakhoda` | `#1F3B3B` | Teks judul, header, warna dasar panel admin |
-| `color-cahaya` | `#E2963C` | Aksen utama, hover, elemen signature |
+| `color-nakhoda` | `#151D18` (≈ `oklch(0.22 0.015 155)`) | Teks judul, header, warna dasar panel admin |
+| `color-cahaya` | `#497F5D` (≈ `oklch(0.55 0.08 155)`) | Aksen utama, hover, elemen signature |
 | `color-cta-whatsapp` | `#1E9E5A` | **Khusus** tombol CTA WhatsApp — jangan dipakai di luar itu, jangan diganti `color-cahaya` |
-| `color-latar` | `#F1F4F2` | Latar belakang halaman |
-| `color-jaga` | `#4C8C6B` | Status "Buka sekarang" — beda sengaja dari `color-cta-whatsapp` walau sama-sama hijau |
+| `color-latar` | `#F5FAF6` (≈ `oklch(0.98 0.007 155)`) | Latar belakang halaman |
+| `color-jaga` | `#67BB6B` (≈ `oklch(0.72 0.14 145)`) | Status "Buka sekarang" — beda sengaja dari `color-cta-whatsapp` walau sama-sama hijau |
 | `color-senja` | `#9C7A5B` | Status "Tutup" — cokelat-tanah, bukan merah alarm |
 | — | `#C0392B` | Error validasi form — **di luar 6 token utama**, sengaja berbeda dari `color-senja` supaya "tutup" dan "kesalahan input" tidak tertukar makna |
 
-Tipografi: **Fraunces** (display/headline), **Plus Jakarta Sans** (body), **IBM Plex Mono** (data presisi — jam praktik, timestamp, angka tabular). Radius `12px` konsisten (kartu/tombol/input) — sengaja **bukan** bentuk blob/organik penuh. Kontras minimum **WCAG AA 4.5:1** (perhatian khusus: teks di atas `color-cahaya` wajib `color-nakhoda` gelap, putih tidak lolos AA). Target sentuh minimum **44×44px**. Breakpoint **360px / 768px / 1280px**, mobile-first.
+Nilai disimpan sebagai hex di Tailwind config (bukan string `oklch()` mentah) karena Tailwind 3.4.13 di proyek ini tidak resolve modifier opacity (`/10`, `/70`, dst.) dengan benar di atas custom color token berformat oklch — lihat UI Template Spec §3 untuk detail.
+
+Tipografi: **Figtree** (display/headline dan body — satu keluarga font, per sinkronisasi `design.html`), **IBM Plex Mono** (data presisi — jam praktik, timestamp, angka tabular, dipertahankan karena `design.html` tidak mencakup tabel data). Radius `16px` konsisten (kartu/tombol/input) — sengaja **bukan** bentuk blob/organik penuh. Kontras minimum **WCAG AA 4.5:1** (perhatian khusus: teks di atas `color-cahaya` wajib `color-nakhoda` gelap, putih tidak lolos AA). Target sentuh minimum **44×44px**. Breakpoint **360px / 768px / 1280px**, mobile-first.
 
 **Elemen signature — "Indikator Cahaya":** badge status buka/tutup dirender sebagai titik cahaya dengan halo lembut (bernapas saat "buka"), **bukan** badge traffic-light generik. Ini elemen paling spesifik-brand di seluruh sistem — jangan disederhanakan jadi dot hijau/merah biasa, dan jangan direplikasi mentah-mentah kalau suatu saat dipakai ulang untuk brief klien lain (motif harus diturunkan ulang dari nama/identitas klien tersebut — lihat UI Template Spec §4).
 
