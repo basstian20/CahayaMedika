@@ -60,6 +60,15 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
   yang sudah ada.
 ### Fixed
+- Inkonsistensi jam operasional: trust-strip "Jam operasional" di Badge Kepercayaan menampilkan
+  `jam_operasional_default` statis apa pun harinya, sementara Indikator Cahaya (status buka/tutup)
+  dihitung dari `jadwal_praktik` hari itu — bisa tampil kontradiktif di halaman yang sama.
+  Trust-strip sekarang reuse `useKlinikStatus` lewat `JamOperasionalHariIni.tsx` supaya sinkron
+  dengan status live; `jam_operasional_default` tetap fallback sesuai desain awal (TSD §5.3).
+- Status buka/tutup klinik saat beberapa dokter praktik di hari yang sama dengan jam berbeda:
+  `useKlinikStatus` sebelumnya pakai `.find()` yang mengambil jadwal dokter pertama secara acak
+  dari query `jadwal_praktik` tak terurut. Sekarang dihitung sebagai rentang gabungan (jam_mulai
+  terawal, jam_selesai terakhir dari semua dokter hari itu) lewat `gabungkanJadwalHari()`.
 - Kartu dokter: foto dr. Bagus Santoso terpotong di bagian kepala karena kontainer foto
   avatar bujur sangkar (1:1, `h-32 w-32`) memaksa crop foto sumber berformat potret (~3:4).
   Kontainer diganti `aspect-[3/4]` + `object-top` supaya rasio nyaris sama persis dengan
