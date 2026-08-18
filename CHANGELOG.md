@@ -7,8 +7,17 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 ### Added
 - Homepage publik: section "Tenaga Medis Kami" (grid kartu foto + nama + spesialisasi dokter),
   melengkapi S2 yang sudah didefinisikan di Wireframe tapi belum diimplementasikan.
-
+- QA visual & aksesibilitas dengan Playwright (CLAUDE.md §9): `.mcp.json` registrasi Playwright
+  MCP, `playwright.config.ts`, dan test nyata pertama `tests/admin/login-accessibility.spec.ts`
+  (kontras WCAG AA via axe-core, target sentuh 44×44px, fokus keyboard — UI Template Spec §7).
+  Scoped ke `/admin/login` karena satu-satunya route yang tidak butuh koneksi Supabase untuk
+  render. Bukan pengganti test suite bisnis-logic formal, yang statusnya tetap sengaja terbuka.
+- `npm run typecheck` (`tsc --noEmit`) — type check cepat tanpa perlu kredensial Supabase,
+  melengkapi `next build` (yang tetap jadi hard gate resmi, Deployment Plan §3).
 ### Changed
+- README: tambah pitch ringkas untuk audiens portofolio (kenapa proyek ini ada, sorotan
+  teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
+  yang sudah ada.
 - Design token (warna, tipografi, radius) disinkronkan sebagian dengan referensi desain
   eksternal `docs/design.html`: `color-nakhoda`/`color-cahaya`/`color-latar`/`color-jaga`
   pindah ke nilai OKLCH baru, font display+body diganti dari Fraunces+Plus Jakarta Sans
