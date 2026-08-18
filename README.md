@@ -12,7 +12,7 @@ sampai kode produksi, bukan proyek klien nyata.
 Panel admin bisa dicoba langsung tanpa setup lokal — akun demo publik, data fiktif, aman
 dieksplorasi:
 
-- **Live demo:** https://cahaya-medika-onc14122s-basstian20s-projects.vercel.app
+- **Live demo:** https://cahaya-medika-basstian20s-projects.vercel.app
 - **Login admin:** tambahkan `/admin/login` di URL di atas
 - **Email:** `admin-demo@cahayamedika.id`
 - **Password:** `DemoCahaya2026!`
