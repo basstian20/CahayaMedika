@@ -1,12 +1,19 @@
 import { z } from "zod";
 
-// [ASUMSI] field mengikuti Blueprint §4 modul Dokter ("nama, spesialisasi") —
-// urutan juga disertakan karena ada di data model TSD §5.1.
-export const updateDokterSchema = z.object({
-  dokter_id: z.string().uuid({ message: "dokter_id harus berupa UUID valid." }),
+// Revisi dari [ASUMSI] semula di Endpoints Spec §4.3 ("scope-nya satu dokter
+// per panggilan") — dikunci ulang jadi batch list, mengikuti pola `layanan`
+// (id opsional untuk item baru, _delete untuk hapus), supaya admin bisa
+// mengelola semua dokter yang tampil di homepage publik (S2), bukan cuma satu.
+const dokterItemSchema = z.object({
+  id: z.string().uuid().optional(),
   nama: z.string().min(1, "nama wajib diisi.").max(120),
   spesialisasi: z.string().min(1, "spesialisasi wajib diisi.").max(120),
-  urutan: z.number().int().min(0).optional(),
+  urutan: z.number().int().min(0),
+  _delete: z.boolean().optional().default(false),
+});
+
+export const updateDokterSchema = z.object({
+  dokter: z.array(dokterItemSchema).min(1, "Minimal satu entri dokter wajib dikirim."),
 });
 
 export type UpdateDokterInput = z.infer<typeof updateDokterSchema>;

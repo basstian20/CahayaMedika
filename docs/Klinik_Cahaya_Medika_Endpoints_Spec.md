@@ -560,7 +560,16 @@ describe("PATCH /api/admin/layanan", () => {
 ## 3. `PATCH /api/admin/dokter`
 
 **Sumber:** Blueprint §4 modul Dokter + PRD §4 Modul 2 ("Profil dokter — nama, spesialisasi, foto").
-`[ASUMSI]`: sama seperti `layanan`, TSD §4.2 tidak mendetailkan shape endpoint ini di §4.3. Berbeda dari `layanan` (list), endpoint ini scope-nya **satu dokter per panggilan** — mengikuti kata "profil" (singular) di Blueprint §4, bukan array batch. Foto ditangani endpoint terpisah (§4 di bawah), **tidak** lewat body PATCH ini.
+`[ASUMSI]` semula: sama seperti `layanan`, TSD §4.2 tidak mendetailkan shape endpoint ini di §4.3. Berbeda dari `layanan` (list), endpoint ini scope-nya **satu dokter per panggilan** — mengikuti kata "profil" (singular) di Blueprint §4, bukan array batch. Foto ditangani endpoint terpisah (§4 di bawah), **tidak** lewat body PATCH ini.
+
+**Catatan revisi (2026-08-18):** `[ASUMSI]` di atas **DITIMPA** — homepage publik menampilkan
+banyak dokter (S2, "Tenaga Medis Kami"), jadi admin butuh mengelola semua dokter itu, bukan
+cuma satu. Endpoint ini sekarang **batch list**, sama persis polanya dengan `layanan` di §2
+(body `{ dokter: [{ id?, nama, spesialisasi, urutan, _delete? }] }`, upsert + delete, bukan
+single-object). Kode di bawah ini **arsip sejarah keputusan lama**, bukan referensi akurat lagi
+— implementasi nyata ada di `lib/modules/dokter/{dokter.schema,dokter.service,dokter.repository}.ts`
+dan `components/admin/{DokterForm,DokterListEditor}.tsx`, ikuti pola `layanan` yang sudah
+didokumentasikan di §2 untuk shape request/response yang akurat.
 
 ### `app/api/admin/dokter/route.ts`
 

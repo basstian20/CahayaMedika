@@ -1,7 +1,7 @@
 import { fetchJson } from "@/lib/api/fetch-json";
 import type { UpdateDokterInput, UpdateDokterResponse } from "./dokter.types";
 
-// dokter_id wajib ada di body — endpoint ini single-record, BUKAN batch (beda dari layanan).
+// Batch, sama seperti layanan — lihat dokter.schema.ts untuk shape { dokter: [...] }.
 export async function updateDokterRequest(
   input: UpdateDokterInput
 ): Promise<UpdateDokterResponse> {

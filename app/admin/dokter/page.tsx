@@ -1,11 +1,26 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import DokterForm from "@/components/admin/DokterForm";
+import type { UpdateDokterInput } from "@/lib/modules/dokter/dokter.types";
 
 export const dynamic = "force-dynamic";
 
+// Revisi dari versi single-dokter (`.limit(1)`) — sekarang mengelola semua
+// dokter yang tampil di homepage publik S2, bukan cuma yang pertama.
 export default async function AdminDokterPage() {
   const supabase = createServerSupabaseClient();
-  const { data } = await supabase.from("dokter").select("*").order("urutan").limit(1).maybeSingle();
+  const { data } = await supabase.from("dokter").select("*").order("urutan");
+
+  const initialDokter: UpdateDokterInput["dokter"] = (data ?? []).map((d) => ({
+    id: d.id,
+    nama: d.nama,
+    spesialisasi: d.spesialisasi,
+    urutan: d.urutan,
+    _delete: false,
+  }));
+
+  const fotoUrlById: Record<string, string | null> = Object.fromEntries(
+    (data ?? []).map((d) => [d.id, d.foto_url ?? null])
+  );
 
   return (
     <main className="min-h-screen bg-latar px-6 py-10 font-body">
@@ -14,13 +29,12 @@ export default async function AdminDokterPage() {
           Edit Profil Dokter
         </h1>
         <DokterForm
-          initialDokter={{
-            dokter_id: data?.id ?? "",
-            nama: data?.nama ?? "",
-            spesialisasi: data?.spesialisasi ?? "",
-            urutan: data?.urutan,
-          }}
-          fotoUrl={data?.foto_url ?? null}
+          initialDokter={
+            initialDokter.length > 0
+              ? initialDokter
+              : [{ nama: "", spesialisasi: "", urutan: 0, _delete: false }]
+          }
+          fotoUrlById={fotoUrlById}
         />
       </div>
     </main>
