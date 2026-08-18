@@ -13,21 +13,24 @@ const config: Config = {
     },
     extend: {
       colors: {
-        nakhoda: "#1F3B3B",
-        cahaya: "#E2963C",
+        // Hex = konversi sRGB dari nilai oklch() di design.html/UI Template Spec §3.
+        // Disimpan sebagai hex (bukan oklch() string) supaya modifier opacity Tailwind
+        // (/10, /70, dst — dipakai luas di seluruh komponen) tetap resolve dengan benar.
+        nakhoda: "#151D18", // oklch(0.22 0.015 155)
+        cahaya: "#497F5D", // oklch(0.55 0.08 155)
         "cta-whatsapp": "#1E9E5A",
-        latar: "#F1F4F2",
-        jaga: "#4C8C6B",
+        latar: "#F5FAF6", // oklch(0.98 0.007 155)
+        jaga: "#67BB6B", // oklch(0.72 0.14 145)
         senja: "#9C7A5B",
         error: "#C0392B",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        body: ["var(--font-plus-jakarta-sans)", "sans-serif"],
+        display: ["var(--font-figtree)", "sans-serif"],
+        body: ["var(--font-figtree)", "sans-serif"],
         mono: ["var(--font-ibm-plex-mono)", "monospace"],
       },
       borderRadius: {
-        xl: "12px",
+        xl: "16px",
       },
       boxShadow: {
         card: "0 2px 8px rgba(31,59,59,0.08)",
