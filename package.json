@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test:a11y": "playwright test"
+    "test:a11y": "playwright test",
+    "seed:demo": "node --env-file=.env.local scripts/seed-demo.mjs",
+    "enrich:demo": "node --env-file=.env.local scripts/enrich-demo.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

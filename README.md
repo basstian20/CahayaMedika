@@ -7,6 +7,24 @@ sampai kode produksi, bukan proyek klien nyata.
 
 **Status:** Draft — Template Internal · lihat [Status Proyek](#status-proyek--yang-masih-terbuka) di bawah untuk apa yang sudah dan belum selesai.
 
+## Coba Sendiri (Demo)
+
+Panel admin bisa dicoba langsung tanpa setup lokal — akun demo publik, data fiktif, aman
+dieksplorasi:
+
+- **Live demo:** `<isi URL production di sini setelah deploy>` <!-- TODO: update setelah merge + Deployment Protection dimatikan -->
+- **Login admin:** tambahkan `/admin/login` di URL di atas
+- **Email:** `admin-demo@cahayamedika.id`
+- **Password:** `DemoCahaya2026!`
+
+Akun ini pakai role yang sama seperti admin asli — proyek ini sengaja cuma punya 1 role,
+tanpa RBAC bertingkat (CLAUDE.md §2) — jadi siapa pun yang login bisa ubah jadwal, layanan,
+dan profil dokter sungguhan di database demo. Datanya fiktif dan aman diutak-atik; setiap
+perubahan tetap tercatat di `/admin/riwayat` beserta email akunnya. Data awal (klinik, 3
+dokter, 5 layanan, jadwal mingguan) diisi lewat `scripts/seed-demo.mjs` +
+`scripts/enrich-demo.mjs` — jalankan ulang kapan saja untuk reset ke kondisi wajar kalau ada
+yang iseng mengubahnya.
+
 ## Kenapa proyek ini ada
 
 Sebagian besar contoh portofolio berhenti di "kode yang jalan". Proyek ini sengaja dipakai
@@ -44,9 +62,10 @@ rantai keputusan yang tertelusuri secara end-to-end:
 
 Ditulis apa adanya, karena itu bagian dari cara kerja proyek ini (lihat CLAUDE.md §7):
 
-- **Belum ada live demo/deploy** — `next build` butuh kredensial Supabase project nyata karena
-  homepage di-SSG dengan query DB saat build (lihat catatan di bawah). Belum di-deploy + belum
-  diisi data contoh.
+- **Live demo sudah ada** (lihat [Coba Sendiri](#coba-sendiri-demo) di atas), tapi masih di
+  Preview Deployment (belum merge ke `main`/production). Production memakai Supabase project
+  terpisah dari Preview/Development (CLAUDE.md §6) — data demo perlu diisi ulang lewat script
+  yang sama begitu production live.
 - **Test suite formal (unit/integration) belum ditulis** — ini keputusan sadar dengan trigger
   eksplisit ("mulai begitu scope proyek bertambah di luar MVP"), bukan terlewat. Lihat
   `docs/Klinik_Cahaya_Medika_Frontend_Logic.md` bagian "Item yang Tetap Terbuka" untuk skeleton
@@ -76,7 +95,9 @@ npm run dev
 
 Migrasi database ada di `supabase/migrations/` (0001–0006) — jalankan lewat Supabase CLI atau
 Dashboard SQL Editor sebelum `npm run dev`. Bucket Storage `dokter-foto` perlu diprovision manual,
-lihat `supabase/STORAGE.md`.
+lihat `supabase/STORAGE.md`. Untuk mengisi data contoh + akun admin demo, jalankan
+`npm run seed:demo` (sekali) lalu `npm run enrich:demo` (opsional, memperkaya data) — keduanya
+butuh `SUPABASE_SERVICE_ROLE_KEY` di `.env.local`.
 
 **Catatan `next build`:** homepage publik (`app/(public)/page.tsx`) di-generate sebagai SSG dan
 query langsung ke Supabase saat build — `next build` butuh `NEXT_PUBLIC_SUPABASE_URL` &

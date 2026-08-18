@@ -14,10 +14,30 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   render. Bukan pengganti test suite bisnis-logic formal, yang statusnya tetap sengaja terbuka.
 - `npm run typecheck` (`tsc --noEmit`) — type check cepat tanpa perlu kredensial Supabase,
   melengkapi `next build` (yang tetap jadi hard gate resmi, Deployment Plan §3).
+- Data demo untuk portofolio: `scripts/seed-demo.mjs` (akun admin demo publik + data awal
+  jika kosong) dan `scripts/enrich-demo.mjs` (memperkaya data placeholder yang sudah ada jadi
+  lebih representatif — 3 dokter dengan spesialisasi & jadwal berbeda, 5 layanan, alamat
+  klinik non-placeholder). Keduanya pakai `service_role` sebagai tooling internal
+  reserved-use (Backend Blueprint §8), idempotent (aman dijalankan ulang).
 ### Changed
+- **Revisi keputusan Endpoints Spec §4.3** ("scope-nya satu dokter per panggilan" untuk modul
+  Dokter): admin sekarang bisa mengelola SEMUA dokter (tambah/edit/hapus + jadwal per dokter),
+  bukan cuma dokter pertama. `app/admin/dokter` & `app/admin/jadwal` diperluas dari single-record
+  ke batch list, mengikuti pola yang sudah ada di modul `layanan` (`dokter.schema.ts`,
+  `.service.ts`, `.repository.ts` sekarang array-based dengan `_delete` flag; `JadwalForm`
+  mengelompokkan baris per dokter, memakai kapasitas batch `fn_update_jadwal_dan_riwayat` yang
+  memang sudah didesain menerima banyak `dokter_id` sekaligus). Ini keputusan sadar milik
+  pemilik proyek yang menimpa `[ASUMSI]` semula, dicatat di sini sebagai revisi eksplisit.
 - README: tambah pitch ringkas untuk audiens portofolio (kenapa proyek ini ada, sorotan
   teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
   yang sudah ada.
+### Fixed
+- Bug batch upsert `dokter` & `layanan`: satu panggilan `.upsert()` atas array campuran
+  (ada item baru tanpa `id`, ada item existing dengan `id`) membuat PostgREST mengirim
+  `id: null` eksplisit untuk item baru, melanggar NOT NULL constraint. Ditemukan lewat uji
+  end-to-end nambah dokter baru berdampingan dengan dokter existing di panel admin (bukan
+  ditebak) — sekarang insert & update dipisah jadi 2 panggilan di `dokter.repository.ts` dan
+  `layanan.repository.ts`.
 - Design token (warna, tipografi, radius) disinkronkan sebagian dengan referensi desain
   eksternal `docs/design.html`: `color-nakhoda`/`color-cahaya`/`color-latar`/`color-jaga`
   pindah ke nilai OKLCH baru, font display+body diganti dari Fraunces+Plus Jakarta Sans
