@@ -7,6 +7,7 @@ import {
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
 import { KlinikStatusBadge } from "@/components/public/KlinikStatusBadge";
 import { KlinikStatusPanel } from "@/components/public/KlinikStatusPanel";
+import { JamOperasionalHariIni } from "@/components/public/JamOperasionalHariIni";
 import { HeroSlideshow } from "@/components/public/HeroSlideshow";
 
 const HARI_LABEL: Record<string, string> = {
@@ -35,6 +36,12 @@ export default async function HomePage() {
   ]);
 
   const nomorWhatsApp = klinikInfo?.telepon ?? "";
+
+  const jadwalMingguIni = jadwal.map((j) => ({
+    hari: j.hari,
+    jam_mulai: j.jam_mulai.slice(0, 5),
+    jam_selesai: j.jam_selesai.slice(0, 5),
+  }));
 
   const jsonLd = klinikInfo
     ? {
@@ -111,11 +118,7 @@ export default async function HomePage() {
 
           <div className="mt-6">
             <KlinikStatusBadge
-              jadwalMingguIni={jadwal.map((j) => ({
-                hari: j.hari,
-                jam_mulai: j.jam_mulai.slice(0, 5),
-                jam_selesai: j.jam_selesai.slice(0, 5),
-              }))}
+              jadwalMingguIni={jadwalMingguIni}
               jamOperasionalDefault={klinikInfo?.jam_operasional_default}
             />
           </div>
@@ -179,10 +182,12 @@ export default async function HomePage() {
           </div>
           <div className="px-6 py-7 md:px-10">
             <div className="font-mono text-2xl font-extrabold tabular-nums text-cahaya">
-              {formatJam(klinikInfo.jam_operasional_default.jam_mulai)}–
-              {formatJam(klinikInfo.jam_operasional_default.jam_selesai)}
+              <JamOperasionalHariIni
+                jadwalMingguIni={jadwalMingguIni}
+                jamOperasionalDefault={klinikInfo.jam_operasional_default}
+              />
             </div>
-            <div className="mt-1 text-sm text-nakhoda/70">Jam operasional</div>
+            <div className="mt-1 text-sm text-nakhoda/70">Jam operasional hari ini</div>
           </div>
         </section>
       )}
@@ -263,11 +268,7 @@ export default async function HomePage() {
       <section id="kontak" className="grid grid-cols-1 gap-10 bg-nakhoda px-6 py-16 text-white md:grid-cols-2 md:px-16">
         <div className="flex flex-col justify-center">
           <KlinikStatusPanel
-            jadwalMingguIni={jadwal.map((j) => ({
-              hari: j.hari,
-              jam_mulai: j.jam_mulai.slice(0, 5),
-              jam_selesai: j.jam_selesai.slice(0, 5),
-            }))}
+            jadwalMingguIni={jadwalMingguIni}
             jamOperasionalDefault={klinikInfo?.jam_operasional_default}
           />
           <h2 className="mb-4 font-display text-2xl font-semibold md:text-[32px]">Kontak & Lokasi</h2>
