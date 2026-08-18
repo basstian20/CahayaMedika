@@ -9,11 +9,11 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   `docs/design.html`, dengan CTA sekunder "Lihat Layanan" mendampingi CTA WhatsApp utama
   (UI Template Spec §5 Tombol Sekunder).
 - Panel visual hero jadi slideshow fasilitas layanan (`components/public/HeroSlideshow.tsx`,
-  4 slide ilustratif — ruang tunggu, konsultasi, bermain anak, apotek), atas instruksi
-  eksplisit pemilik proyek untuk menaikkan kesan meyakinkan halaman portofolio. Auto-rotate
-  4.5s adalah pengecualian motion kedua di luar glow Indikator Cahaya — dicatat sebagai
-  revisi eksplisit di UI Template Spec §3 Motion, berhenti otomatis saat pointer/fokus di
-  atas panel dan saat `prefers-reduced-motion` aktif. Navigasi panah + dot semuanya
+  4 foto asli ruang klinik — ruang tunggu keluarga, ruang konsultasi dokter, ruang bermain
+  anak, apotek & ruang obat — menggantikan ikon placeholder awal begitu foto asli tersedia).
+  Auto-rotate 4.5s adalah pengecualian motion kedua di luar glow Indikator Cahaya — dicatat
+  sebagai revisi eksplisit di UI Template Spec §3 Motion, berhenti otomatis saat pointer/fokus
+  di atas panel dan saat `prefers-reduced-motion` aktif. Navigasi panah + dot semuanya
   bertarget sentuh 44×44px (UI Template Spec §7).
 - Badge kepercayaan diperluas dari 2 ke 4 kolom (strip berbingkai ala `design.html`): tahun
   berdiri, jumlah dokter, dan jam operasional dihitung dari data asli; "500+ Pasien dilayani"
@@ -28,8 +28,13 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 - Header dapat CTA WhatsApp pill compact (`WhatsAppButton` prop `size`/`label` baru) di
   sebelah nomor telepon, supaya konversi tetap mudah tanpa scroll — nomor telepon disembunyikan
   di breakpoint mobile (`md:inline`) supaya header tidak sesak.
-- Homepage publik: section "Tenaga Medis Kami" (grid kartu foto + nama + spesialisasi dokter),
-  melengkapi S2 yang sudah didefinisikan di Wireframe tapi belum diimplementasikan.
+- Homepage publik: section "Tenaga Medis Kami" (kartu foto + nama + spesialisasi dokter),
+  melengkapi S2 yang sudah didefinisikan di Wireframe tapi belum diimplementasikan. Kartu
+  memakai foto asli tiap dokter (`foto_url` dari Supabase Storage bucket `dokter-foto`,
+  diunggah lewat `scripts/seed-demo.mjs`) dan jadwal praktik mingguan tiap dokter digabung
+  langsung ke dalam kartu masing-masing, menggantikan tabel "Jadwal Dokter Mingguan" (S3)
+  yang sebelumnya terpisah — keputusan eksplisit pemilik proyek, menyimpang dari pola
+  "Baris Tabel Jadwal" di UI Template Spec §5.
 - QA visual & aksesibilitas dengan Playwright (CLAUDE.md §9): `.mcp.json` registrasi Playwright
   MCP, `playwright.config.ts`, dan test nyata pertama `tests/admin/login-accessibility.spec.ts`
   (kontras WCAG AA via axe-core, target sentuh 44×44px, fokus keyboard — UI Template Spec §7).
@@ -55,6 +60,11 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
   yang sudah ada.
 ### Fixed
+- Kartu dokter: foto dr. Bagus Santoso terpotong di bagian kepala karena kontainer foto
+  avatar bujur sangkar (1:1, `h-32 w-32`) memaksa crop foto sumber berformat potret (~3:4).
+  Kontainer diganti `aspect-[3/4]` + `object-top` supaya rasio nyaris sama persis dengan
+  foto sumber — sekaligus jadi dasar redesain kartu jadi lebih besar (foto full-width di
+  atas kartu, bukan avatar kecil di tengah).
 - Bug batch upsert `dokter` & `layanan`: satu panggilan `.upsert()` atas array campuran
   (ada item baru tanpa `id`, ada item existing dengan `id`) membuat PostgREST mengirim
   `id: null` eksplisit untuk item baru, melanggar NOT NULL constraint. Ditemukan lewat uji
