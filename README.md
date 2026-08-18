@@ -12,7 +12,7 @@ sampai kode produksi, bukan proyek klien nyata.
 Panel admin bisa dicoba langsung tanpa setup lokal — akun demo publik, data fiktif, aman
 dieksplorasi:
 
-- **Live demo:** `<isi URL production di sini setelah deploy>` <!-- TODO: update setelah merge + Deployment Protection dimatikan -->
+- **Live demo:** https://cahaya-medika-onc14122s-basstian20s-projects.vercel.app
 - **Login admin:** tambahkan `/admin/login` di URL di atas
 - **Email:** `admin-demo@cahayamedika.id`
 - **Password:** `DemoCahaya2026!`
@@ -62,10 +62,8 @@ rantai keputusan yang tertelusuri secara end-to-end:
 
 Ditulis apa adanya, karena itu bagian dari cara kerja proyek ini (lihat CLAUDE.md §7):
 
-- **Live demo sudah ada** (lihat [Coba Sendiri](#coba-sendiri-demo) di atas), tapi masih di
-  Preview Deployment (belum merge ke `main`/production). Production memakai Supabase project
-  terpisah dari Preview/Development (CLAUDE.md §6) — data demo perlu diisi ulang lewat script
-  yang sama begitu production live.
+- **Live demo sudah di production** (lihat [Coba Sendiri](#coba-sendiri-demo) di atas) —
+  `main` sudah di-deploy otomatis lewat integrasi Git Vercel setelah merge PR terakhir.
 - **Test suite formal (unit/integration) belum ditulis** — ini keputusan sadar dengan trigger
   eksplisit ("mulai begitu scope proyek bertambah di luar MVP"), bukan terlewat. Lihat
   `docs/Klinik_Cahaya_Medika_Frontend_Logic.md` bagian "Item yang Tetap Terbuka" untuk skeleton
