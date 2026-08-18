@@ -77,9 +77,6 @@ export default async function HomePage() {
           <a href="#dokter" className="hover:text-nakhoda">
             Dokter
           </a>
-          <a href="#jadwal" className="hover:text-nakhoda">
-            Jadwal
-          </a>
           <a href="#kontak" className="hover:text-nakhoda">
             Kontak
           </a>
@@ -190,95 +187,74 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Profil Dokter — S2 (grid kartu foto + nama + spesialisasi, Wireframe §S2) */}
+      {/* Profil Dokter + Jadwal — S2+S3 digabung (per instruksi eksplisit owner:
+          jadwal tidak lagi jadi tabel terpisah, melebur ke tiap kartu dokter).
+          Foto pakai aspect-[3/4] (bukan avatar bujur sangkar) supaya sesuai
+          rasio asli foto sumber dan kepala tidak terpotong object-cover. */}
       {dokter.length > 0 && (
         <section id="dokter" className="px-6 py-16 md:px-16">
           <div className="mx-auto mb-8 max-w-5xl">
             <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-cahaya">Tenaga Medis</div>
             <h2 className="font-display text-2xl font-semibold text-nakhoda md:text-[32px]">Dokter kami</h2>
           </div>
-          <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {dokter.map((d) => (
-              <div
-                key={d.id}
-                className="rounded-xl border border-nakhoda/10 bg-white p-6 text-center shadow-card transition hover:shadow-lg"
-              >
-                {d.foto_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={d.foto_url}
-                    alt={d.nama}
-                    className="mx-auto mb-4 h-32 w-32 rounded-xl object-cover"
-                  />
-                ) : (
-                  <div
-                    className="mx-auto mb-4 flex h-32 w-32 items-center justify-center rounded-xl bg-nakhoda/10"
-                    aria-hidden
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                      className="h-12 w-12 text-nakhoda/40"
-                    >
-                      <circle cx="12" cy="8" r="4" />
-                      <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-                    </svg>
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {dokter.map((d) => {
+              const jadwalDokter = HARI_URUTAN.map((hari) => jadwal.find((j) => j.dokter_id === d.id && j.hari === hari)).filter(
+                (j): j is (typeof jadwal)[number] => Boolean(j)
+              );
+              return (
+                <div
+                  key={d.id}
+                  className="overflow-hidden rounded-xl border border-nakhoda/10 bg-white shadow-card transition hover:shadow-lg"
+                >
+                  <div className="relative aspect-[3/4] w-full bg-nakhoda/10">
+                    {d.foto_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={d.foto_url}
+                        alt={d.nama}
+                        className="h-full w-full object-cover object-top"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center" aria-hidden>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                          className="h-16 w-16 text-nakhoda/40"
+                        >
+                          <circle cx="12" cy="8" r="4" />
+                          <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                )}
-                <h3 className="font-display text-lg font-semibold text-nakhoda">{d.nama}</h3>
-                <p className="text-sm text-nakhoda/70">{d.spesialisasi}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+                  <div className="p-6">
+                    <h3 className="font-display text-lg font-semibold text-nakhoda">{d.nama}</h3>
+                    <p className="text-sm text-nakhoda/70">{d.spesialisasi}</p>
 
-      {/* Jadwal Dokter Mingguan — S3 */}
-      {dokter.length > 0 && (
-        <section id="jadwal" className="px-6 py-16 md:px-16">
-          <div className="mx-auto mb-8 max-w-3xl">
-            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-cahaya">Jam Praktik</div>
-            <h2 className="font-display text-2xl font-semibold text-nakhoda md:text-[32px]">Jadwal Dokter Mingguan</h2>
-          </div>
-          <div className="mx-auto max-w-3xl overflow-x-auto rounded-xl border border-nakhoda/10 bg-white shadow-card">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-nakhoda/10 text-xs uppercase text-nakhoda/50">
-                  <th className="p-4">Hari</th>
-                  <th className="p-4">Dokter</th>
-                  <th className="p-4">Jam Praktik</th>
-                </tr>
-              </thead>
-              <tbody>
-                {HARI_URUTAN.flatMap((hari) => {
-                  const rows = jadwal.filter((j) => j.hari === hari);
-                  if (rows.length === 0) {
-                    return (
-                      <tr key={hari} className="border-b border-nakhoda/5 last:border-0">
-                        <td className="p-4 font-medium text-nakhoda">{HARI_LABEL[hari]}</td>
-                        <td className="p-4 italic text-nakhoda/40" colSpan={2}>
-                          Jadwal belum diperbarui
-                        </td>
-                      </tr>
-                    );
-                  }
-                  return rows.map((j) => {
-                    const dokterNama = dokter.find((d) => d.id === j.dokter_id)?.nama ?? "-";
-                    return (
-                      <tr key={j.id} className="border-b border-nakhoda/5 last:border-0">
-                        <td className="p-4 font-medium text-nakhoda">{HARI_LABEL[hari]}</td>
-                        <td className="p-4 text-nakhoda">{dokterNama}</td>
-                        <td className="p-4 font-mono tabular-nums text-nakhoda">
-                          {formatJam(j.jam_mulai)}–{formatJam(j.jam_selesai)}
-                        </td>
-                      </tr>
-                    );
-                  });
-                })}
-              </tbody>
-            </table>
+                    <div className="mt-4 border-t border-nakhoda/10 pt-4">
+                      <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-nakhoda/50">Jam Praktik</div>
+                      {jadwalDokter.length > 0 ? (
+                        <ul className="space-y-1.5 text-sm">
+                          {jadwalDokter.map((j) => (
+                            <li key={j.id} className="flex items-center justify-between gap-3">
+                              <span className="text-nakhoda/70">{HARI_LABEL[j.hari]}</span>
+                              <span className="font-mono tabular-nums text-nakhoda">
+                                {formatJam(j.jam_mulai)}–{formatJam(j.jam_selesai)}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm italic text-nakhoda/40">Jadwal belum diperbarui</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
@@ -323,7 +299,6 @@ export default async function HomePage() {
         <nav className="mb-2 flex justify-center gap-4">
           <a href="#layanan">Layanan</a>
           <a href="#dokter">Dokter</a>
-          <a href="#jadwal">Jadwal</a>
           <a href="#kontak">Kontak</a>
         </nav>
         <p>

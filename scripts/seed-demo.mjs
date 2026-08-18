@@ -4,6 +4,11 @@
 //
 // Jalankan: node --env-file=.env.local scripts/seed-demo.mjs
 import { createClient } from "@supabase/supabase-js";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -98,14 +103,23 @@ async function ensureLayanan() {
 }
 
 async function ensureDokterDanJadwal() {
-  const { data: existing, error: selErr } = await supabase.from("dokter").select("id").limit(1);
+  const { data: existing, error: selErr } = await supabase.from("dokter").select("id, nama").limit(10);
   if (selErr) throw selErr;
   if (existing && existing.length > 0) {
-    console.log("dokter sudah ada, skip (jadwal juga di-skip).");
+    console.log("dokter sudah ada, skip insert (jadwal juga di-skip).");
+    const amelia = existing.find((d) => d.nama.includes("Amelia"));
+    if (amelia) {
+      const { error: renameError } = await supabase
+        .from("dokter")
+        .update({ nama: "dr. Ayu Pratiwi" })
+        .eq("id", amelia.id);
+      if (renameError) throw renameError;
+      console.log("dokter 'dr. Amelia Putri' diganti nama jadi 'dr. Ayu Pratiwi' (selaras foto demo).");
+    }
     return;
   }
   const dokterRows = [
-    { nama: "dr. Amelia Putri", spesialisasi: "Dokter Umum", urutan: 1 },
+    { nama: "dr. Ayu Pratiwi", spesialisasi: "Dokter Umum", urutan: 1 },
     { nama: "dr. Bagus Santoso, Sp.A", spesialisasi: "Spesialis Anak", urutan: 2 },
     { nama: "drg. Citra Dewi", spesialisasi: "Dokter Gigi", urutan: 3 },
   ];
@@ -130,11 +144,75 @@ async function ensureDokterDanJadwal() {
   console.log(`jadwal_praktik diisi (${jadwalRows.length} baris).`);
 }
 
+// Upload foto demo dokter ke bucket Storage `dokter-foto` (Backend Blueprint
+// §6 — bucket bukan bagian migrasi SQL) dan isi foto_url. File sumber di
+// .local/dokter-foto/ (gitignored, bukan aset repo — beda dengan foto
+// fasilitas statis yang commit ke public/images/fasilitas/).
+const FOTO_DOKTER = [
+  { match: "Ayu", file: "ayu-pratiwi.jpg", storageName: "ayu-pratiwi.jpg" },
+  { match: "Bagus", file: "bagus-santoso.jpg", storageName: "bagus-santoso.jpg" },
+  { match: "Citra", file: "citra-dewi.jpg", storageName: "citra-dewi.jpg" },
+];
+
+// Provisioning bucket lewat script, bukan Dashboard manual — setara secara
+// fungsional dengan langkah manual di STORAGE.md (nama, public, limit,
+// MIME type sama persis), dibuat idempoten supaya aman dijalankan ulang.
+async function ensureBucketDokterFoto() {
+  const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+  if (listError) throw listError;
+  if (buckets.some((b) => b.name === "dokter-foto")) {
+    console.log("Bucket 'dokter-foto' sudah ada, skip.");
+    return;
+  }
+  const { error: createError } = await supabase.storage.createBucket("dokter-foto", {
+    public: true,
+    fileSizeLimit: 2 * 1024 * 1024,
+    allowedMimeTypes: ["image/jpeg", "image/png", "image/webp"],
+  });
+  if (createError) throw createError;
+  console.log("Bucket 'dokter-foto' dibuat (public, limit 2MB — sesuai supabase/STORAGE.md).");
+}
+
+async function ensureFotoDokter() {
+  await ensureBucketDokterFoto();
+
+  const { data: dokter, error: selErr } = await supabase.from("dokter").select("id, nama, foto_url");
+  if (selErr) throw selErr;
+
+  for (const entry of FOTO_DOKTER) {
+    const target = dokter.find((d) => d.nama.includes(entry.match));
+    if (!target) continue;
+
+    const localPath = path.join(__dirname, "..", ".local", "dokter-foto", entry.file);
+    let fileBuffer;
+    try {
+      fileBuffer = readFileSync(localPath);
+    } catch {
+      console.log(`Lewati foto ${entry.match}: file lokal tidak ditemukan (${localPath}).`);
+      continue;
+    }
+
+    const { error: uploadError } = await supabase.storage
+      .from("dokter-foto")
+      .upload(entry.storageName, fileBuffer, { contentType: "image/jpeg", upsert: true });
+    if (uploadError) throw uploadError;
+
+    const { data: publicUrlData } = supabase.storage.from("dokter-foto").getPublicUrl(entry.storageName);
+    const { error: updateError } = await supabase
+      .from("dokter")
+      .update({ foto_url: publicUrlData.publicUrl })
+      .eq("id", target.id);
+    if (updateError) throw updateError;
+    console.log(`Foto ${target.nama} diunggah & foto_url diisi.`);
+  }
+}
+
 async function main() {
   await ensureDemoUser();
   await ensureKlinikInfo();
   await ensureLayanan();
   await ensureDokterDanJadwal();
+  await ensureFotoDokter();
   console.log("\nSelesai. Login demo admin:");
   console.log(`  URL   : /admin/login`);
   console.log(`  Email : ${DEMO_EMAIL}`);
