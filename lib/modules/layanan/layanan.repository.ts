@@ -18,7 +18,7 @@ export async function upsertLayanan(
 ): Promise<{ upsertedCount: number }> {
   if (items.length === 0) return { upsertedCount: 0 };
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const toInsert = items.filter((item) => !item.id);
   const toUpdate = items.filter((item) => item.id);
 
@@ -65,7 +65,7 @@ export async function upsertLayanan(
 
 export async function deleteLayanan(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase.from("layanan").delete().in("id", ids);
   if (error) throw new InternalError(`Gagal hapus layanan: ${error.message}`);
 }

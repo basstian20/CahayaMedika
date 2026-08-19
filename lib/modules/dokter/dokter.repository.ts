@@ -17,7 +17,7 @@ export async function upsertDokter(
 ): Promise<{ upsertedCount: number }> {
   if (items.length === 0) return { upsertedCount: 0 };
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const toInsert = items.filter((item) => !item.id);
   const toUpdate = items.filter((item) => item.id);
 
@@ -62,7 +62,7 @@ export async function upsertDokter(
 
 export async function deleteDokter(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   // on delete cascade ke jadwal_praktik (migrasi 0004) — jadwal dokter yang
   // dihapus ikut terhapus otomatis, tidak perlu delete manual di sini.
   const { error } = await supabase.from("dokter").delete().in("id", ids);
@@ -70,7 +70,7 @@ export async function deleteDokter(ids: string[]): Promise<void> {
 }
 
 export async function updateFotoUrl(dokterId: string, fotoUrl: string): Promise<void> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("dokter")
     .update({ foto_url: fotoUrl, updated_at: new Date().toISOString() })

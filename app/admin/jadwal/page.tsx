@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 // transaction (ON CONFLICT per dokter_id+hari), jadi ini bukan perubahan skema/RPC,
 // cuma memperluas data yang dikirim dari halaman admin.
 export default async function AdminJadwalPage() {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { data: dokterList } = await supabase.from("dokter").select("id, nama").order("urutan");
   const { data: jadwalExisting } = await supabase
     .from("jadwal_praktik")

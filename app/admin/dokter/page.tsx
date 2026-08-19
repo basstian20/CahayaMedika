@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 // Revisi dari versi single-dokter (`.limit(1)`) — sekarang mengelola semua
 // dokter yang tampil di homepage publik S2, bukan cuma yang pertama.
 export default async function AdminDokterPage() {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { data } = await supabase.from("dokter").select("*").order("urutan");
 
   const initialDokter: UpdateDokterInput["dokter"] = (data ?? []).map((d) => ({
