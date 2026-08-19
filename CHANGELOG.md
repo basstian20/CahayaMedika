@@ -65,6 +65,13 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
   yang sudah ada.
 ### Fixed
+- Audit keamanan & performa (2026-08-19): storage path upload foto dokter tidak lagi diturunkan
+  dari `file.name` client-controlled (risiko path/prefix injection ke bucket `dokter-foto`),
+  sekarang dipetakan dari MIME tervalidasi (`FOTO_MIME_TO_EXT`). JSON-LD di homepage publik
+  meng-escape `<` sebelum diinjeksikan lewat `dangerouslySetInnerHTML` (cegah stored XSS lewat
+  field `klinik_info` yang berisi `</script>`). Foto dokter (homepage publik + preview upload
+  admin) dipindah dari `<img>` mentah ke `next/image`, memakai `remotePatterns` yang sudah
+  terdaftar di `next.config.mjs` — resize otomatis, WebP/AVIF, srcset responsif, lazy-loading.
 - Kartu layanan (S1/S2) merender kotak kosong sebagai pengganti ikon (anatomi Kartu Layanan
   di UI Template Spec §5 minta line-icon konsisten). Ditambahkan `components/public/LayananCard.tsx`
   dengan pemetaan kata kunci nama layanan ke ikon `lucide-react` (vaksin/gizi/anak/gigi,
