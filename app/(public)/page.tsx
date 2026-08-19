@@ -211,11 +211,12 @@ export default async function HomePage() {
                 >
                   <div className="relative aspect-[3/4] w-full bg-nakhoda/10">
                     {d.foto_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         src={d.foto_url}
                         alt={d.nama}
-                        className="h-full w-full object-cover object-top"
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover object-top"
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center" aria-hidden>

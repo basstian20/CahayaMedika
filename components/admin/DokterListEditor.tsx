@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useFieldArray, type Control, type UseFormRegister } from "react-hook-form";
 import type { UpdateDokterInput } from "@/lib/modules/dokter/dokter.types";
 import { useUploadFotoDokter } from "@/hooks/useUploadFotoDokter";
@@ -101,10 +102,11 @@ function DokterFotoField({ dokterId, initialFotoUrl, disabled }: DokterFotoField
     <div className="mb-3">
       <label className="mb-2 block text-sm font-medium text-nakhoda">Foto Profil</label>
       {(preview || fotoUrl) && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           src={fotoUrl ?? preview ?? ""}
           alt="Foto profil dokter"
+          width={80}
+          height={80}
           className="mb-2 h-20 w-20 rounded-xl object-cover"
         />
       )}
