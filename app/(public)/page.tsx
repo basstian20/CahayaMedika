@@ -67,7 +67,9 @@ export default async function HomePage() {
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          // Escape "<" supaya field admin (nama/alamat) yang mengandung
+          // "</script>" tidak bisa keluar dari tag script ini (stored XSS).
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
       )}
 
