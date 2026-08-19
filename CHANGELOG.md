@@ -4,6 +4,22 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Security
+- Upgrade `next` 14.2.15 → 15.5.23 ([PR #13](https://github.com/basstian20/CahayaMedika/pull/13)), menutup 6 advisory `npm audit`
+  high-severity yang relevan untuk app ini dan fix-nya tidak pernah di-backport ke jalur 14.2.x:
+  DoS/cache-poisoning React Server Components (GHSA-q4gf-8mx6-v5v3, GHSA-8h8q-6873-q5fj,
+  GHSA-wfc6-r584-vfw7, GHSA-vfv6-92ff-j949), DoS Image Optimization API (GHSA-h64f-5h5j-jqjh —
+  relevan karena `next/image` dipakai luas termasuk foto dokter), dan RSC request deserialization
+  DoS (GHSA-h25m-26qc-wcjf). Next.js 16.x (rename `middleware.ts`→`proxy.ts`, Turbopack default,
+  ESLint 9 wajib, Node 20.9+) sengaja ditunda ke inisiatif terpisah — bukan syarat menutup
+  advisory di atas.
+### Changed
+- `@supabase/ssr` 0.5.1 → 0.12.4 dan `@supabase/supabase-js` 2.45.4 → 2.112.3 (peer dependency
+  `@supabase/ssr` terbaru), mengikuti bump Next.js 15 di atas. `cookies()`/`headers()` jadi async
+  di Next 15 dan pola cookie `get/set/remove` di `@supabase/ssr` sudah deprecated diganti
+  `getAll/setAll` — `createServerSupabaseClient()` (`lib/supabase/server.ts`) dan `middleware.ts`
+  disesuaikan, 11 call site ditambah `await`. React tetap 18.3.1, Tailwind tetap 3.4.x (locked,
+  CLAUDE.md §2.2) — tidak ikut naik karena tidak diwajibkan peer dependency Next 15.5.23.
 ### Added
 - Logo klinik asli dipasang di header publik, favicon (`app/icon.png`), login admin, dan
   header dashboard admin — menggantikan placeholder dot warna. Logo diproses background

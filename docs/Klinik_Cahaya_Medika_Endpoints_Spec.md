@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| Versi Dokumen | v1.1 — direvisi dari baseline awal: framing status "test suite" (item #7) diselaraskan dengan Backend Blueprint §10.2; catatan penutup diperbarui untuk mencerminkan bahwa Blueprint §6 (item #3, #5) sudah diterapkan, bukan lagi sekadar direkomendasikan |
+| Versi Dokumen | v1.2 — direvisi dari v1.1 (framing status "test suite" item #7 diselaraskan dengan Backend Blueprint §10.2; catatan penutup diperbarui untuk mencerminkan bahwa Blueprint §6 item #3/#5 sudah diterapkan): backport upgrade Next.js 15 (PR #13) ke §0 `lib/supabase/server.ts`/`lib/auth/session.ts` dan seluruh contoh kode endpoint — `createServerSupabaseClient()` jadi async (`cookies()` async di Next 15), adapter cookie `get/set/remove` diganti `getAll/setAll` (deprecated di `@supabase/ssr`) |
 | Referensi PRD | Landing Page Klinik Cahaya Medika, v1.1 |
 
 > **Dokumen coding-stage**, bukan dokumen sign-off. Dibangun dari:
@@ -154,16 +154,18 @@ import { cookies } from "next/headers";
 // Session-scoped client (konteks `authenticated`), BUKAN service_role —
 // keputusan final Backend Blueprint §10.1 poin 2: RLS harus tetap jadi
 // lapisan otorisasi kedua, bukan di-bypass oleh repository write.
-export function createServerSupabaseClient() {
-  const cookieStore = cookies();
+//
+// cookies() async sejak Next.js 15 (backport v1.2, PR #13) — getAll/setAll
+// dipakai karena get/set/remove sudah deprecated di @supabase/ssr.
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get: (name: string) => cookieStore.get(name)?.value,
-        set: () => {}, // Route Handler tidak perlu set cookie baru di sini
-        remove: () => {},
+        getAll: () => cookieStore.getAll(),
+        setAll: () => {}, // Route Handler tidak perlu set cookie baru di sini
       },
     }
   );
@@ -178,7 +180,7 @@ import type { Session } from "@supabase/supabase-js";
 
 // Ambil & validasi Supabase session dari request Route Handler — Blueprint §4 modul Auth
 export async function verifySession(): Promise<Session | null> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -344,7 +346,7 @@ export async function upsertJadwalBatch(
   adminId: string,
   ringkasan: string
 ): Promise<{ updatedCount: number }> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
 
   const { data, error } = await supabase.rpc("fn_update_jadwal_dan_riwayat", {
     p_jadwal: jadwal,
@@ -499,7 +501,7 @@ export async function upsertLayanan(
 ): Promise<{ upsertedCount: number }> {
   if (items.length === 0) return { upsertedCount: 0 };
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error, count } = await supabase
     .from("layanan")
     .upsert(
@@ -521,7 +523,7 @@ export async function upsertLayanan(
 
 export async function deleteLayanan(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase.from("layanan").delete().in("id", ids);
   if (error) throw new InternalError(`Gagal hapus layanan: ${error.message}`);
 }
@@ -652,7 +654,7 @@ import { InternalError, NotFoundError } from "@/lib/shared/errors";
 import type { UpdateDokterInput } from "./dokter.schema";
 
 export async function updateDokterProfil(input: UpdateDokterInput): Promise<void> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("dokter")
     .update({
@@ -670,7 +672,7 @@ export async function updateDokterProfil(input: UpdateDokterInput): Promise<void
 }
 
 export async function updateFotoUrl(dokterId: string, fotoUrl: string): Promise<void> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("dokter")
     .update({ foto_url: fotoUrl, updated_at: new Date().toISOString() })
@@ -760,7 +762,7 @@ import { ALLOWED_FOTO_MIME, MAX_FOTO_SIZE_BYTES } from "./dokter.schema";
 export async function uploadFotoDokter(file: File, dokterId: string, adminId: string) {
   validateFoto(file); // TSD §9 risiko: validasi ukuran & tipe MIME sebelum upload
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const ext = file.name.split(".").pop() ?? "jpg";
   const path = `${dokterId}/${Date.now()}.${ext}`;
 
@@ -901,7 +903,7 @@ export async function insertRiwayat(
   jenis: JenisPerubahan,
   ringkasan: string
 ): Promise<void> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("riwayat_perubahan")
     .insert({ admin_id: adminId, jenis_perubahan: jenis, ringkasan });
@@ -914,7 +916,7 @@ export async function paginateRiwayat(
   page: number,
   limit: number
 ): Promise<{ data: RiwayatRow[]; page: number; has_more: boolean }> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const from = (page - 1) * limit;
   const to = from + limit; // ambil 1 ekstra untuk deteksi has_more
 
