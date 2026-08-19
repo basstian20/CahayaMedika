@@ -3,7 +3,7 @@ import { updateFotoUrl } from "./dokter.repository";
 import { catatPerubahan } from "@/lib/modules/riwayat/riwayat.service";
 import { revalidatePublicHomepage } from "@/lib/revalidation/revalidate-public";
 import { ValidationError, InternalError } from "@/lib/shared/errors";
-import { ALLOWED_FOTO_MIME, MAX_FOTO_SIZE_BYTES } from "./dokter.schema";
+import { ALLOWED_FOTO_MIME, MAX_FOTO_SIZE_BYTES, FOTO_MIME_TO_EXT } from "./dokter.schema";
 
 // Wrapper eksplisit ke Supabase Storage — nama class isolasi disebut Blueprint §8
 // sebagai DokterFotoStorageClient; diimplementasikan di sini sebagai fungsi
@@ -14,7 +14,10 @@ export async function uploadFotoDokter(file: File, dokterId: string, adminId: st
   validateFoto(file); // TSD §9 risiko: validasi ukuran & tipe MIME sebelum upload
 
   const supabase = createServerSupabaseClient();
-  const ext = file.name.split(".").pop() ?? "jpg";
+  // Ekstensi dari MIME tervalidasi, bukan file.name — file.name datang dari
+  // multipart body yang client-controlled, tidak boleh dipercaya untuk
+  // menyusun storage path (risiko path/prefix injection).
+  const ext = FOTO_MIME_TO_EXT[file.type as (typeof ALLOWED_FOTO_MIME)[number]];
   const path = `${dokterId}/${Date.now()}.${ext}`;
 
   const { error: uploadError } = await supabase.storage

@@ -26,3 +26,12 @@ export const uploadFotoSchema = z.object({
 
 export const MAX_FOTO_SIZE_BYTES = 2 * 1024 * 1024; // 2MB — [ASUMSI, lihat Endpoints Spec item terbuka #4]
 export const ALLOWED_FOTO_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
+
+// Sumber kebenaran ekstensi storage path — JANGAN turunkan ekstensi dari
+// file.name (client-controlled, bisa berisi "/" atau ".." di request mentah
+// di luar browser). Dipetakan dari MIME yang sudah divalidasi validateFoto().
+export const FOTO_MIME_TO_EXT: Record<(typeof ALLOWED_FOTO_MIME)[number], string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
