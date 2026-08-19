@@ -8,7 +8,9 @@ import { WhatsAppButton } from "@/components/public/WhatsAppButton";
 import { KlinikStatusBadge } from "@/components/public/KlinikStatusBadge";
 import { KlinikStatusPanel } from "@/components/public/KlinikStatusPanel";
 import { JamOperasionalHariIni } from "@/components/public/JamOperasionalHariIni";
+import Image from "next/image";
 import { HeroSlideshow } from "@/components/public/HeroSlideshow";
+import { LayananCard } from "@/components/public/LayananCard";
 
 const HARI_LABEL: Record<string, string> = {
   senin: "Senin",
@@ -72,7 +74,7 @@ export default async function HomePage() {
       {/* Header sticky — S1 */}
       <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-nakhoda/10 bg-latar/95 px-6 py-4 backdrop-blur">
         <div className="flex items-center gap-2.5">
-          <span className="h-8 w-8 rounded-full bg-cahaya" aria-hidden />
+          <Image src="/images/logo.png" alt="" width={46} height={44} className="h-11 w-auto" priority aria-hidden />
           <span className="font-display text-lg font-semibold text-nakhoda">
             {klinikInfo?.nama ?? "Klinik Cahaya Medika"}
           </span>
@@ -146,16 +148,9 @@ export default async function HomePage() {
               Apa yang paling sering dibutuhkan keluarga Anda
             </h2>
           </div>
-          <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-1 md:grid-cols-3">
+          <div className="mx-auto flex max-w-5xl flex-wrap justify-center gap-4">
             {layanan.map((l) => (
-              <div
-                key={l.id}
-                className="rounded-xl border border-nakhoda/10 bg-white p-7 shadow-card transition hover:shadow-lg"
-              >
-                <div className="mb-4 h-11 w-11 rounded-xl bg-cahaya/10" aria-hidden />
-                <h3 className="mb-2 font-display text-lg font-semibold text-nakhoda">{l.nama}</h3>
-                <p className="text-sm leading-relaxed text-nakhoda/70">{l.deskripsi}</p>
-              </div>
+              <LayananCard key={l.id} nama={l.nama} deskripsi={l.deskripsi} />
             ))}
           </div>
         </section>

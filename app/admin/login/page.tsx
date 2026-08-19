@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Suspense, useState } from "react";
 import { useAdminLogin } from "@/hooks/useAdminLogin";
 
@@ -22,6 +23,15 @@ function LoginForm() {
       aria-busy={status === "loading"}
       className="w-full max-w-sm rounded-xl bg-latar p-8 shadow-card"
     >
+      <Image
+        src="/images/logo.png"
+        alt=""
+        width={58}
+        height={56}
+        className="mb-3 h-14 w-auto"
+        priority
+        aria-hidden
+      />
       <h1 className="mb-6 font-display text-2xl font-semibold text-nakhoda">
         Klinik Cahaya Medika
       </h1>
