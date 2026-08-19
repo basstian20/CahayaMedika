@@ -242,6 +242,17 @@ Runbook di bawah dipilih dari risiko yang sudah eksplisit ditandai arsitektur Te
 **Eskalasi:** Tidak perlu — production tidak terdampak selama build lama masih aktif (karakteristik atomic cutover, §4).
 **Tindak lanjut root cause:** Catat pola kegagalan berulang (mis. dependency yang sering bikin masalah) untuk pertimbangan menambah automated test (§3) begitu tim/scope berkembang.
 
+### Runbook: GitHub check "Supabase Preview" gagal karena migration history drift
+**Trigger / cara terdeteksi:** Check "Supabase Preview" (GitHub App `supabase`) gagal di PR/commit dengan error seperti `relation/policy/function "..." already exists` (mis. SQLSTATE 42710) pada migrasi yang seharusnya sudah lama diterapkan — padahal PR yang gagal tidak menyentuh file migrasi apa pun.
+**Severity:** P2 (memblokir sinyal hijau di PR/preview branch; production tetap berjalan di schema yang benar — ini murni masalah bookkeeping history, bukan schema rusak)
+**Langkah segera:**
+1. **Jangan** ubah isi file migrasi yang dituduh (mis. menambah `if not exists` sebagai tambal sulam) — itu menutupi gejala drift, bukan akar masalahnya.
+2. Buka SQL Editor project Supabase yang terhubung ke integrasi GitHub (project ref ada di `details_url` check-run) dan bandingkan history vs file lokal: `select version from supabase_migrations.schema_migrations order by version;` terhadap isi `supabase/migrations/`.
+3. Untuk tiap versi yang hilang dari history, verifikasi dulu objek utamanya (table/function/view) benar-benar sudah ada di database lewat `to_regclass('public.<nama>')` / `to_regprocedure(...)` — baru backfill versi itu lewat `insert into supabase_migrations.schema_migrations (version, name, statements) values (...) on conflict (version) do nothing;`. **Jangan** insert versi yang objeknya belum benar-benar ada — itu akan menyembunyikan migrasi yang sungguh belum jalan.
+4. Verifikasi lewat commit/PR baru bahwa check kembali hijau.
+**Eskalasi:** Tidak perlu — solo developer menangani langsung.
+**Tindak lanjut root cause:** Insiden 2026-08-19: `supabase_migrations.schema_migrations` di project GitHub-integration kosong total, padahal schema live sudah punya migrasi 0001–0007 secara utuh (dikonfirmasi lewat `to_regclass`/`to_regprocedure` per objek). Kemungkinan besar schema awal pernah di-bootstrap sekali (SQL Editor atau proses lain) tanpa lewat `supabase migration up`/`db push` yang normal mencatat history. Diperbaiki dengan backfill 7 baris history, bukan mengubah file migrasi. Ke depan: migrasi production **selalu** lewat `supabase migration up` (§3) — jangan tempel manual SQL langsung ke SQL Editor untuk perubahan schema yang seharusnya jadi file migrasi bernomor, supaya history tidak drift lagi.
+
 ---
 
 ## 9. Maintenance Schedule
