@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useAdminSession } from "@/lib/auth/useAdminSession";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
@@ -23,7 +24,14 @@ export default function AdminDashboardPage() {
   return (
     <main className="min-h-screen bg-latar font-body">
       <header className="flex items-center justify-between bg-nakhoda px-6 py-4 text-latar">
-        <span className="font-display font-semibold">Klinik Cahaya Medika</span>
+        <div className="flex items-center gap-2.5">
+          {/* Chip terang di belakang logo — bagian navy mark nyaris tak
+              kontras di atas nakhoda gelap (~1.8:1) tanpa backdrop ini. */}
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-latar p-1">
+            <Image src="/images/logo.png" alt="" width={28} height={27} className="h-7 w-auto" aria-hidden />
+          </span>
+          <span className="font-display font-semibold">Klinik Cahaya Medika</span>
+        </div>
         <button onClick={handleLogout} className="min-h-[44px] rounded-xl border border-latar/30 px-4 text-sm">
           Keluar
         </button>

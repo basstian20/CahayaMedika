@@ -8,6 +8,7 @@ import { WhatsAppButton } from "@/components/public/WhatsAppButton";
 import { KlinikStatusBadge } from "@/components/public/KlinikStatusBadge";
 import { KlinikStatusPanel } from "@/components/public/KlinikStatusPanel";
 import { JamOperasionalHariIni } from "@/components/public/JamOperasionalHariIni";
+import Image from "next/image";
 import { HeroSlideshow } from "@/components/public/HeroSlideshow";
 import { LayananCard } from "@/components/public/LayananCard";
 
@@ -73,7 +74,7 @@ export default async function HomePage() {
       {/* Header sticky — S1 */}
       <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-nakhoda/10 bg-latar/95 px-6 py-4 backdrop-blur">
         <div className="flex items-center gap-2.5">
-          <span className="h-8 w-8 rounded-full bg-cahaya" aria-hidden />
+          <Image src="/images/logo.png" alt="" width={46} height={44} className="h-11 w-auto" priority aria-hidden />
           <span className="font-display text-lg font-semibold text-nakhoda">
             {klinikInfo?.nama ?? "Klinik Cahaya Medika"}
           </span>
