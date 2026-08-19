@@ -5,6 +5,11 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 ### Added
+- Logo klinik asli dipasang di header publik, favicon (`app/icon.png`), login admin, dan
+  header dashboard admin — menggantikan placeholder dot warna. Logo diproses background
+  transparan + auto-crop whitespace. Header dashboard admin (latar gelap `bg-nakhoda`)
+  memakai chip `bg-latar` di belakang logo karena mark navy-nya nyaris tak kontras (~1.8:1)
+  langsung di atas latar gelap.
 - Homepage publik: hero dipecah jadi grid 2 kolom (teks + panel visual) mengikuti pola
   `docs/design.html`, dengan CTA sekunder "Lihat Layanan" mendampingi CTA WhatsApp utama
   (UI Template Spec §5 Tombol Sekunder).
@@ -60,6 +65,12 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
   yang sudah ada.
 ### Fixed
+- Kartu layanan (S1/S2) merender kotak kosong sebagai pengganti ikon (anatomi Kartu Layanan
+  di UI Template Spec §5 minta line-icon konsisten). Ditambahkan `components/public/LayananCard.tsx`
+  dengan pemetaan kata kunci nama layanan ke ikon `lucide-react` (vaksin/gizi/anak/gigi,
+  fallback stethoscope). Grid diganti dari CSS grid ke flex+justify-center supaya baris
+  terakhir yang tidak penuh center, bukan rata kiri berlubang; hover state ditambah lift
+  halus sesuai spec.
 - Inkonsistensi jam operasional: trust-strip "Jam operasional" di Badge Kepercayaan menampilkan
   `jam_operasional_default` statis apa pun harinya, sementara Indikator Cahaya (status buka/tutup)
   dihitung dari `jadwal_praktik` hari itu — bisa tampil kontradiktif di halaman yang sama.
