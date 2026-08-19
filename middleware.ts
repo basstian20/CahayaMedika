@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 
 // Route guard untuk /admin/* (kecuali /admin/login) — hanya 1 role,
 // tidak ada RBAC bertingkat (TSD §4.1), jadi cukup cek "ada session atau tidak".
@@ -16,11 +16,12 @@ export async function middleware(req: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get: (name: string) => req.cookies.get(name)?.value,
-        set: (name: string, value: string, options: CookieOptions) =>
-          res.cookies.set(name, value, options),
-        remove: (name: string, options: CookieOptions) =>
-          res.cookies.set(name, "", { ...options, maxAge: 0 }),
+        getAll: () => req.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            res.cookies.set(name, value, options);
+          });
+        },
       },
     }
   );

@@ -12,7 +12,7 @@ export async function upsertJadwalBatch(
   adminId: string,
   ringkasan: string
 ): Promise<{ updatedCount: number }> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
 
   const { data, error } = await supabase.rpc("fn_update_jadwal_dan_riwayat", {
     p_jadwal: jadwal,

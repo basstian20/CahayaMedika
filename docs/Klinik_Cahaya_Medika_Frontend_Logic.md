@@ -205,6 +205,9 @@ import { createServerClient } from "@supabase/ssr";
 // Route guard untuk /admin/* (kecuali /admin/login) — hanya 1 role,
 // tidak ada RBAC bertingkat (TSD §4.1), jadi cukup cek "ada session atau tidak".
 // UX-layer saja — lihat §0.4. Server tetap requireAdmin() per-request.
+//
+// getAll/setAll dipakai karena get/set/remove sudah deprecated di @supabase/ssr
+// (backport v1.1, PR #13, sejalan dengan upgrade Next.js 15).
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
@@ -217,9 +220,12 @@ export async function middleware(req: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get: (name) => req.cookies.get(name)?.value,
-        set: (name, value, options) => res.cookies.set(name, value, options),
-        remove: (name, options) => res.cookies.set(name, "", { ...options, maxAge: 0 }),
+        getAll: () => req.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            res.cookies.set(name, value, options);
+          });
+        },
       },
     }
   );

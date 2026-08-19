@@ -5,7 +5,7 @@ import type { UpdateLayananInput } from "@/lib/modules/layanan/layanan.types";
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayananPage() {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { data } = await supabase.from("layanan").select("*").order("urutan");
 
   const initialLayanan: UpdateLayananInput["layanan"] = (data ?? []).map((l) => ({

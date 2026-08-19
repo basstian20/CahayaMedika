@@ -15,7 +15,7 @@ export async function insertRiwayat(
   jenis: JenisPerubahan,
   ringkasan: string
 ): Promise<void> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("riwayat_perubahan")
     .insert({ admin_id: adminId, jenis_perubahan: jenis, ringkasan });
@@ -33,7 +33,7 @@ export async function paginateRiwayat(
   page: number,
   limit: number
 ): Promise<{ data: RiwayatRow[]; page: number; has_more: boolean }> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const from = (page - 1) * limit;
   const to = from + limit; // ambil 1 ekstra untuk deteksi has_more
 

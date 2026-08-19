@@ -13,7 +13,7 @@ import { ALLOWED_FOTO_MIME, MAX_FOTO_SIZE_BYTES, FOTO_MIME_TO_EXT } from "./dokt
 export async function uploadFotoDokter(file: File, dokterId: string, adminId: string) {
   validateFoto(file); // TSD §9 risiko: validasi ukuran & tipe MIME sebelum upload
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   // Ekstensi dari MIME tervalidasi, bukan file.name — file.name datang dari
   // multipart body yang client-controlled, tidak boleh dipercaya untuk
   // menyusun storage path (risiko path/prefix injection).
