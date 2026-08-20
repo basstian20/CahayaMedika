@@ -19,10 +19,15 @@ interface DokterListEditorProps {
 // dan foto cuma bisa diunggah untuk dokter yang sudah punya id (tersimpan) —
 // dokter baru harus disimpan dulu sebelum foto-nya bisa diunggah.
 export function DokterListEditor({ control, register, disabled, fotoUrlById }: DokterListEditorProps) {
-  const { fields, append, remove, update } = useFieldArray({ control, name: "dokter" });
+  // keyName: "_fieldId" — default RHF selalu overwrite properti `id` di setiap
+  // item dengan id internal random-nya sendiri (regenerated tiap render, TIDAK
+  // stabil antara render server & client). Field ini butuh `id` ASLI (dokter_id
+  // sungguhan) tetap utuh untuk lookup fotoUrlById & target upload foto,
+  // jadi RHF dipaksa simpan id trackingnya sendiri di properti terpisah.
+  const { fields, append, remove, update } = useFieldArray({ control, name: "dokter", keyName: "_fieldId" });
 
   function markForDelete(index: number) {
-    const current = fields[index];
+    const { _fieldId, ...current } = fields[index];
     if (current.id) {
       update(index, { ...current, _delete: true });
     } else {
@@ -34,8 +39,15 @@ export function DokterListEditor({ control, register, disabled, fotoUrlById }: D
     <div className="space-y-4">
       {fields.map((field, index) =>
         field._delete ? null : (
-          <div key={field.id} className="rounded-xl bg-white p-4 shadow-card">
-            <DokterFotoField dokterId={field.id} initialFotoUrl={field.id ? fotoUrlById[field.id] ?? null : null} disabled={disabled} />
+          <div key={field._fieldId} className="rounded-xl bg-white p-4 shadow-card">
+            <p className="mb-3 text-xs font-medium uppercase tracking-wide text-nakhoda/50">
+              Dokter {index + 1}
+            </p>
+            <DokterFotoField
+              dokterId={field.id}
+              initialFotoUrl={field.id ? fotoUrlById[field.id] ?? null : null}
+              disabled={disabled}
+            />
 
             <label className="mb-1 block text-sm font-medium text-nakhoda">Nama</label>
             <input
@@ -111,12 +123,24 @@ function DokterFotoField({ dokterId, initialFotoUrl, disabled }: DokterFotoField
         />
       )}
       {dokterId ? (
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={handleFileChange}
-          disabled={disabled || status === "uploading"}
-        />
+        <>
+          <label
+            htmlFor={`foto-${dokterId}`}
+            className={`inline-flex min-h-[44px] cursor-pointer items-center rounded-xl border border-nakhoda/20 px-4 text-sm font-medium text-nakhoda ${
+              disabled || status === "uploading" ? "pointer-events-none opacity-40" : ""
+            }`}
+          >
+            {status === "uploading" ? "Mengunggah..." : preview || fotoUrl ? "Ganti Foto" : "Pilih Foto"}
+          </label>
+          <input
+            id={`foto-${dokterId}`}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileChange}
+            disabled={disabled || status === "uploading"}
+            className="sr-only"
+          />
+        </>
       ) : (
         <p className="text-xs italic text-nakhoda/50">Simpan dulu sebelum bisa upload foto.</p>
       )}

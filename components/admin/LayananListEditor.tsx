@@ -29,6 +29,9 @@ export function LayananListEditor({ control, register, disabled }: LayananListEd
       {fields.map((field, index) =>
         field._delete ? null : (
           <div key={field.id} className="rounded-xl bg-white p-4 shadow-card">
+            <p className="mb-3 text-xs font-medium uppercase tracking-wide text-nakhoda/50">
+              Layanan {index + 1}
+            </p>
             <label className="mb-1 block text-sm font-medium text-nakhoda">Nama Layanan</label>
             <input
               {...register(`layanan.${index}.nama`)}
@@ -43,7 +46,12 @@ export function LayananListEditor({ control, register, disabled }: LayananListEd
               className="mb-3 w-full rounded-xl border border-nakhoda/20 px-3 py-2 focus:border-cahaya focus:outline-none focus:ring-2 focus:ring-cahaya"
             />
             <label className="mb-3 flex items-center gap-2 text-sm text-nakhoda">
-              <input type="checkbox" {...register(`layanan.${index}.tampil_di_homepage`)} disabled={disabled} />
+              <input
+                type="checkbox"
+                {...register(`layanan.${index}.tampil_di_homepage`)}
+                disabled={disabled}
+                className="h-4 w-4 accent-cahaya"
+              />
               Tampilkan di homepage
             </label>
             <button
