@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import JadwalForm from "@/components/admin/JadwalForm";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 import type { UpdateJadwalInput } from "@/lib/modules/jadwal/jadwal.types";
 
 const HARI = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"] as const;
@@ -35,8 +36,9 @@ export default async function AdminJadwalPage() {
   );
 
   return (
-    <main className="min-h-screen bg-latar px-6 py-10 font-body">
-      <div className="mx-auto max-w-3xl">
+    <main className="min-h-screen bg-latar font-body">
+      <AdminHeader backHref="/admin" />
+      <div className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="mb-6 font-display text-2xl font-semibold text-nakhoda">
           Edit Jadwal Dokter
         </h1>
