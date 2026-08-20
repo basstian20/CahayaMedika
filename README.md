@@ -5,7 +5,10 @@ Medika". **Studi kasus ilustratif/template internal NobleDev** — dibangun seba
 end-to-end untuk proyek web SME (klinik, bimbel, biro jasa): dari dokumen scoping (PRD/SOW)
 sampai kode produksi, bukan proyek klien nyata.
 
-**Status:** Draft — Template Internal · lihat [Status Proyek](#status-proyek--yang-masih-terbuka) di bawah untuk apa yang sudah dan belum selesai.
+[![Status](https://img.shields.io/badge/status-Draft_%E2%80%94_Template_Internal-yellow)](#status-proyek--yang-masih-terbuka)
+[![Release](https://img.shields.io/github/v/release/basstian20/CahayaMedika?label=release)](https://github.com/basstian20/CahayaMedika/releases)
+
+Lihat [Status Proyek](#status-proyek--yang-masih-terbuka) di bawah untuk apa yang sudah dan belum selesai.
 
 ## Coba Sendiri (Demo)
 
