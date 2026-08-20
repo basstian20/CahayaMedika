@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 import { Suspense, useState } from "react";
 import { useAdminLogin } from "@/hooks/useAdminLogin";
 
@@ -67,9 +68,9 @@ function LoginForm() {
           type="button"
           onClick={() => setShowPassword((v) => !v)}
           aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-          className="min-h-[44px] min-w-[44px] shrink-0 rounded-xl border border-nakhoda/20 text-sm text-nakhoda"
+          className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-xl border border-nakhoda/20 text-nakhoda"
         >
-          {showPassword ? "Sembunyikan" : "Tampilkan"}
+          {showPassword ? <EyeOff className="h-5 w-5" aria-hidden /> : <Eye className="h-5 w-5" aria-hidden />}
         </button>
       </div>
 
