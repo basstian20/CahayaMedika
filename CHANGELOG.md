@@ -80,6 +80,10 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 - README: tambah pitch ringkas untuk audiens portofolio (kenapa proyek ini ada, sorotan
   teknis, status terbuka apa adanya) di bagian atas, tanpa mengubah bagian setup/struktur
   yang sudah ada.
+- Login admin (S5): tombol toggle show/hide password diganti dari teks "Tampilkan"/
+  "Sembunyikan" jadi ikon mata (`Eye`/`EyeOff`, `lucide-react` — sudah dipakai di
+  `LayananCard.tsx`), `aria-label` dan target sentuh 44×44px tetap dipertahankan
+  (UI Template Spec §5, §7). ([PR #14](https://github.com/basstian20/CahayaMedika/pull/14))
 ### Fixed
 - Audit keamanan & performa (2026-08-19): storage path upload foto dokter tidak lagi diturunkan
   dari `file.name` client-controlled (risiko path/prefix injection ke bucket `dokter-foto`),
