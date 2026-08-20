@@ -16,6 +16,20 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
   pola sama dengan homepage publik), logic interaktif dipindah ke `AdminDashboard.tsx`. Tetap
   sidebar-free (keputusan eksplisit UI Template Spec §6), tidak ada token warna/font baru.
   ([PR #18](https://github.com/basstian20/CahayaMedika/pull/18))
+- Editor Layanan/Dokter (S7/S8): tombol upload foto dokter (native `<input type="file">` tanpa
+  styling) diganti tombol bertoken (rounded-xl, min-h-44px — UI Template Spec §5/§7). Kartu tiap
+  item di editor Layanan/Dokter dapat label penomoran ("Layanan 1", "Dokter 1") untuk scannability,
+  konsisten dengan pola grouping per-dokter yang sudah ada di `JadwalForm`. Checkbox "Tampilkan di
+  homepage" dapat `accent-cahaya`, menggantikan warna default biru browser.
+  ([PR #20](https://github.com/basstian20/CahayaMedika/pull/20))
+### Fixed
+- Preview & upload foto dokter (S8) selalu salah target: `useFieldArray({ name: "dokter" })`
+  secara default React Hook Form meng-overwrite properti `id` tiap item dengan id tracking
+  internal-nya sendiri (di-generate ulang tiap render, tidak stabil server/client), sehingga
+  `fotoUrlById[field.id]` dan target `dokterId` upload selalu salah — foto dokter yang sudah
+  tersimpan tidak pernah muncul di preview. Diperbaiki dengan `keyName: "_fieldId"` supaya id
+  tracking RHF disimpan terpisah dari `id` asli (dokter_id sungguhan).
+  ([PR #20](https://github.com/basstian20/CahayaMedika/pull/20))
 
 ## [0.2.0] - 2026-08-20
 ### Security
