@@ -4,6 +4,8 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.3.0] - 2026-08-20
 ### Added
 - Panel admin (S6-S9): `components/admin/AdminHeader.tsx` dipasang konsisten di 5 halaman admin
   (dashboard, jadwal, layanan, dokter, riwayat) — tombol kembali ke dashboard + logout, sebelumnya
