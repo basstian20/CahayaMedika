@@ -4,6 +4,18 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Added
+- Panel admin (S6-S9): `components/admin/AdminHeader.tsx` dipasang konsisten di 5 halaman admin
+  (dashboard, jadwal, layanan, dokter, riwayat) — tombol kembali ke dashboard + logout, sebelumnya
+  4 dari 5 halaman tidak punya jalan balik selain tombol back browser. Kartu navigasi dashboard
+  dapat ikon `lucide-react` (`CalendarClock`/`ClipboardList`/`UserRound`/`History`) mengikuti
+  anatomi "Kartu Navigasi Admin" di UI Template Spec §5 yang sebelumnya belum diimplementasikan.
+  Dashboard menampilkan Indikator Cahaya (elemen signature) di header, sesuai wireframe S6 di
+  UI Template Spec §6 — admin melihat status buka/tutup yang sama persis dengan pasien.
+  `app/admin/page.tsx` diubah jadi Server Component tipis (fetch `klinik_info` + `jadwal_praktik`,
+  pola sama dengan homepage publik), logic interaktif dipindah ke `AdminDashboard.tsx`. Tetap
+  sidebar-free (keputusan eksplisit UI Template Spec §6), tidak ada token warna/font baru.
+  ([PR #18](https://github.com/basstian20/CahayaMedika/pull/18))
 
 ## [0.2.0] - 2026-08-20
 ### Security
