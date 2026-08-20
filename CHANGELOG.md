@@ -4,6 +4,8 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.2.0] - 2026-08-20
 ### Security
 - Upgrade `next` 14.2.15 → 15.5.23 ([PR #13](https://github.com/basstian20/CahayaMedika/pull/13)), menutup 6 advisory `npm audit`
   high-severity yang relevan untuk app ini dan fix-nya tidak pernah di-backport ke jalur 14.2.x:
