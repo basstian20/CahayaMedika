@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRiwayat } from "@/lib/modules/riwayat/useRiwayat";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 import type { RiwayatEntry } from "@/lib/modules/riwayat/riwayat.types";
 
 const LIMIT = 20;
@@ -24,8 +25,9 @@ export default function RiwayatPage() {
   }
 
   return (
-    <main className="min-h-screen bg-latar px-6 py-10 font-body">
-      <div className="mx-auto max-w-3xl">
+    <main className="min-h-screen bg-latar font-body">
+      <AdminHeader backHref="/admin" />
+      <div className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="mb-6 font-display text-2xl font-semibold text-nakhoda">
           Riwayat Perubahan
         </h1>
