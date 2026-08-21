@@ -1,14 +1,22 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateJadwalSchema } from "@/lib/modules/jadwal/jadwal.schema";
 import type { UpdateJadwalInput } from "@/lib/modules/jadwal/jadwal.types";
 import { useUpdateJadwal } from "@/lib/modules/jadwal/useUpdateJadwal";
+import { PreviewPane } from "./PreviewPane";
+import { DokterCard } from "@/components/public/DokterCard";
+
+export interface DokterInfo {
+  nama: string;
+  spesialisasi: string;
+  foto_url: string | null;
+}
 
 interface JadwalFormProps {
   initialJadwal: UpdateJadwalInput["jadwal"];
-  dokterMap: Record<string, string>;
+  dokterInfoMap: Record<string, DokterInfo>;
 }
 
 const HARI_LABEL: Record<string, string> = {
@@ -23,8 +31,8 @@ const HARI_LABEL: Record<string, string> = {
 
 // Revisi dari versi single-dokter — satu form sekarang mengirim jadwal untuk
 // semua dokter sekaligus (array flat `jadwal` tetap sama di level data/RPC,
-// cuma dikelompokkan per dokter di tampilan lewat dokterMap).
-export default function JadwalForm({ initialJadwal, dokterMap }: JadwalFormProps) {
+// cuma dikelompokkan per dokter di tampilan lewat dokterInfoMap).
+export default function JadwalForm({ initialJadwal, dokterInfoMap }: JadwalFormProps) {
   const {
     register,
     handleSubmit,
@@ -36,6 +44,7 @@ export default function JadwalForm({ initialJadwal, dokterMap }: JadwalFormProps
   });
 
   const { fields } = useFieldArray({ control, name: "jadwal" });
+  const watchedJadwal = useWatch({ control, name: "jadwal" }) ?? [];
   const { save, status, errorMessage } = useUpdateJadwal();
 
   const onSubmit = handleSubmit((values) => save(values));
@@ -46,12 +55,13 @@ export default function JadwalForm({ initialJadwal, dokterMap }: JadwalFormProps
   const dokterIds = Array.from(new Set(fields.map((f) => f.dokter_id)));
 
   return (
-    <form onSubmit={onSubmit} className="font-body">
+    <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
+      <form onSubmit={onSubmit} className="font-body">
       <div className="space-y-6">
         {dokterIds.map((dokterId) => (
           <div key={dokterId} className="overflow-x-auto rounded-xl bg-white shadow-card">
             <h2 className="border-b border-nakhoda/10 p-4 font-display font-semibold text-nakhoda">
-              {dokterMap[dokterId] ?? "Dokter"}
+              {dokterInfoMap[dokterId]?.nama ?? "Dokter"}
             </h2>
             <table className="w-full text-left">
               <thead>
@@ -121,6 +131,27 @@ export default function JadwalForm({ initialJadwal, dokterMap }: JadwalFormProps
       >
         {status === "saving" ? "Menyimpan..." : "Simpan Jadwal"}
       </button>
-    </form>
+      </form>
+
+      <PreviewPane>
+        {dokterIds.length > 0 ? (
+          dokterIds.map((dokterId) => {
+            const jadwalDokter = watchedJadwal.filter((j) => j.dokter_id === dokterId);
+            const info = dokterInfoMap[dokterId];
+            return (
+              <DokterCard
+                key={dokterId}
+                nama={info?.nama ?? "Dokter"}
+                spesialisasi={info?.spesialisasi ?? ""}
+                fotoUrl={info?.foto_url ?? null}
+                jadwal={jadwalDokter}
+              />
+            );
+          })
+        ) : (
+          <p className="text-sm italic text-nakhoda/40">Belum ada dokter.</p>
+        )}
+      </PreviewPane>
+    </div>
   );
 }

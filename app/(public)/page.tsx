@@ -11,21 +11,9 @@ import { JamOperasionalHariIni } from "@/components/public/JamOperasionalHariIni
 import Image from "next/image";
 import { HeroSlideshow } from "@/components/public/HeroSlideshow";
 import { LayananCard } from "@/components/public/LayananCard";
+import { DokterCard } from "@/components/public/DokterCard";
 
-const HARI_LABEL: Record<string, string> = {
-  senin: "Senin",
-  selasa: "Selasa",
-  rabu: "Rabu",
-  kamis: "Kamis",
-  jumat: "Jumat",
-  sabtu: "Sabtu",
-  minggu: "Minggu",
-};
 const HARI_URUTAN = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"];
-
-function formatJam(jam: string) {
-  return jam.slice(0, 5).replace(":", ".");
-}
 
 // Server Component — SSG + on-demand ISR (TSD §3.3). Query langsung Supabase
 // (anon client + RLS publik), tidak lewat Route Handler (Backend Blueprint §5).
@@ -205,57 +193,13 @@ export default async function HomePage() {
                 (j): j is (typeof jadwal)[number] => Boolean(j)
               );
               return (
-                <div
+                <DokterCard
                   key={d.id}
-                  className="overflow-hidden rounded-xl border border-nakhoda/10 bg-white shadow-card transition hover:shadow-lg"
-                >
-                  <div className="relative aspect-[3/4] w-full bg-nakhoda/10">
-                    {d.foto_url ? (
-                      <Image
-                        src={d.foto_url}
-                        alt={d.nama}
-                        fill
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover object-top"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center" aria-hidden>
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={1.5}
-                          className="h-16 w-16 text-nakhoda/40"
-                        >
-                          <circle cx="12" cy="8" r="4" />
-                          <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-display text-lg font-semibold text-nakhoda">{d.nama}</h3>
-                    <p className="text-sm text-nakhoda/70">{d.spesialisasi}</p>
-
-                    <div className="mt-4 border-t border-nakhoda/10 pt-4">
-                      <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-nakhoda/50">Jam Praktik</div>
-                      {jadwalDokter.length > 0 ? (
-                        <ul className="space-y-1.5 text-sm">
-                          {jadwalDokter.map((j) => (
-                            <li key={j.id} className="flex items-center justify-between gap-3">
-                              <span className="text-nakhoda/70">{HARI_LABEL[j.hari]}</span>
-                              <span className="font-mono tabular-nums text-nakhoda">
-                                {formatJam(j.jam_mulai)}–{formatJam(j.jam_selesai)}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm italic text-nakhoda/40">Jadwal belum diperbarui</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                  nama={d.nama}
+                  spesialisasi={d.spesialisasi}
+                  fotoUrl={d.foto_url}
+                  jadwal={jadwalDokter}
+                />
               );
             })}
           </div>
