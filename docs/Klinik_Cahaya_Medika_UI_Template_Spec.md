@@ -12,6 +12,8 @@
 
 > **Catatan revisi (2026-08-18):** Token warna, tipografi, dan radius di §3 disinkronkan dengan referensi desain eksternal `docs/design.html` (mock HTML high-fidelity yang di-upload user, lihat `docs/README.md` untuk konteksnya). **Bukan penggantian sistem token secara penuh** — nilai yang punya padanan langsung di `design.html` disinkronkan, nilai yang tidak punya padanan (state "Tutup", CTA WhatsApp, warna error) **dipertahankan** dari keputusan riset asli §2/§8 karena `design.html` tidak menyediakan data pengganti untuk itu (mock tersebut hanya mock marketing publik, tidak mencakup admin panel, tabel data, atau state "tutup"). Struktur 9 screen, elemen signature "Indikator Cahaya", dan strategi konten klinik keluarga (§1, §6) **tidak berubah** — `design.html` dibuat untuk konteks bisnis berbeda (klinik estetik/dermatologi) dan copy-nya sengaja tidak diadopsi, hanya token visual + pola layout (hero slideshow, trust badge strip) yang relevan.
 
+> **Catatan revisi (2026-08-21):** Keputusan "3 kartu setara besar, sidebar-free, navigasi hub-only" di §5 ("Kartu Navigasi Admin") dan §6 (wireframe S6) **digantikan** — bukan dihapus diam-diam, lihat rasional lengkap di §5/§6 di bawah. Ringkas: dashboard S6 sekarang menampilkan ringkasan data hidup (bukan cuma tombol navigasi), navigasi antar S6–S9 lewat sidebar/rail persisten (bukan hub-only balik ke dashboard tiap pindah modul), dan form edit S7/S8 (jadwal/layanan/dokter) menambah kolom pratinjau tampilan publik di sebelah form (live, dari nilai form yang belum disimpan). Token warna/tipografi/radius di §3 **tidak berubah**. Trigger revisi: modul Dokter (S8) sudah menambah 1 kartu navigasi keempat sejak rasional "3 kartu" ditulis, dan kebutuhan admin melihat dampak perubahan sebelum simpan (bukan cuma status Indikator Cahaya) makin nyata seiring modul bertambah.
+
 ---
 
 ## 1. Ringkasan Brief
@@ -147,12 +149,19 @@ Uji kalibrasi (§SKILL.md langkah 3): jika brief serupa datang dari klinik lain 
 - **State**: default, empty (baris menampilkan teks italic "Jadwal belum diperbarui" — bukan baris kosong membingungkan, sesuai wireframe S3).
 - **Do**: jam selalu format 24 jam (`08.00–15.00`), konsisten dengan konvensi lokal Indonesia.
 
-### Kartu Navigasi Admin (Dashboard Hub, S6)
-- **Anatomi**: ikon besar, label aksi ("Edit Jadwal Dokter" / "Edit Info Layanan" / "Lihat Riwayat"), 1 baris sublabel status terakhir diubah.
-- **Varian**: 3 kartu setara besar (bukan sidebar bertingkat) — mengikuti keputusan UX wireframe §5 poin 1 yang eksplisit menolak menu bertingkat untuk persona David.
-- **State**: default, hover (border `color-cahaya`), focus-visible (ring).
+### Kartu Navigasi Admin (Dashboard Ringkasan, S6)
+- **Anatomi**: ikon besar, label aksi ("Edit Jadwal Dokter" / "Edit Info Layanan" / "Edit Profil Dokter" / "Lihat Riwayat"), 1 baris subtitle data ringkas (jumlah dokter/layanan aktif, bukan lagi teks statis), 1 baris sublabel "Terakhir diubah" (dari riwayat, per modul).
+- **Varian (revisi 2026-08-21 — lihat Catatan Revisi di atas dokumen)**: sebelumnya "3 kartu setara besar, tanpa sidebar" (menolak menu bertingkat, wireframe §5 poin 1). Sekarang: kartu ringkasan (grid, bukan cuma tombol) **plus** navigasi sidebar/rail persisten di luar kartu ini (§6) — kartu di dashboard jadi ringkasan-dengan-pintasan, bukan satu-satunya jalan navigasi. Prinsip "tanpa menu bertingkat" tetap dipertahankan — sidebar tetap flat 1 level, bukan nested/collapsible.
+- **State**: default, hover (border `color-cahaya`), focus-visible (ring 2px `color-cahaya` offset 2px).
 - **Do**: gunakan bahasa "yang dikontrol pengguna" — "Edit Jadwal Dokter", bukan "Kelola Modul Jadwal" (istilah sistem).
 - **Don't**: jangan tambahkan badge notifikasi/angka merah — sistem ini tidak punya konsep notifikasi, memaksakannya hanya menambah beban kognitif yang eksplisit ingin dihindari NFR (training >15 menit).
+
+### Pratinjau Tampilan Publik (Preview Pane, S7/S8)
+- **Anatomi**: kolom di sebelah form edit (jadwal/layanan/dokter), border putus-putus + label "Pratinjau Tampilan Publik" di atas, isi berupa komponen publik yang sama persis dengan homepage (`LayananCard`, `DokterCard`) — bukan tiruan/mock terpisah, supaya tidak drift dari tampilan asli.
+- **Sumber data**: nilai form yang belum disimpan (live, via `useWatch`), bukan fetch ulang ke server — approksimasi cukup untuk tujuan "lihat dampak sebelum simpan", bukan render SSR presisi.
+- **Layout**: 2 kolom di `≥md` (form kiri, preview kanan), stack vertikal (preview di bawah form) di mobile.
+- **Do**: label "Pratinjau" harus selalu terlihat supaya admin tidak salah kira ini halaman live.
+- **Don't**: jangan render preview tanpa border/label pembeda dari form — risiko admin bingung mana yang form, mana yang preview.
 
 ### Input Form (Admin, S5/S7/S8)
 - **Anatomi**: label di atas field (bukan placeholder-only — placeholder hilang saat mulai mengetik, buruk untuk admin non-tech-savvy), field, pesan bantuan/error di bawah.
@@ -221,20 +230,20 @@ Uji kalibrasi (§SKILL.md langkah 3): jika brief serupa datang dari klinik lain 
 
 **Konsep dalam satu kalimat**: Panel yang terasa seperti "form kertas yang dipindah ke layar" — tidak ada yang perlu ditebak, tiga aksi besar, tanpa navigasi tersembunyi.
 
-**Wireframe ASCII (S6 — Dashboard, representatif untuk register admin)**:
+**Wireframe ASCII (S6 — Dashboard, representatif untuk register admin, revisi 2026-08-21 — lihat Catatan Revisi di atas dokumen)**:
 ```
 ┌──────────────────────────────────────────┐
-│ Klinik Cahaya Medika        [Keluar]      │  ← header admin, latar color-nakhoda, teks putih
-├──────────────────────────────────────────┤
-│ ● Buka sekarang   ·  Terakhir diubah: ... │  ← Indikator Cahaya yang sama dgn publik
-├──────────────────────────────────────────┤
-│                                            │
-│  [ Edit Jadwal   ]  [ Edit Info    ]      │
-│  [   Dokter      ]  [   Layanan    ]      │  ← 2 kartu besar, setara
-│                                            │
-│  [ Lihat Riwayat Perubahan          ]     │  ← kartu ke-3, lebar penuh
-│                                            │
-└──────────────────────────────────────────┘
+│ Klinik Cahaya Medika        [Keluar]      │  ← header admin, latar color-nakhoda, teks putih (persisten di semua S6-S9)
+├────────────┬─────────────────────────────┤
+│ Dashboard  │ ● Buka sekarang              │  ← Indikator Cahaya yang sama dgn publik
+│ Jadwal     ├─────────────────────────────┤
+│ Layanan    │ [Ringkasan Jadwal] [Ringkasan│  ← kartu berisi data (jumlah, terakhir diubah)
+│ Dokter     │  Layanan] [Ringkasan Dokter] │
+│ Riwayat    │ [Lihat Riwayat Perubahan]    │
+│            ├─────────────────────────────┤
+│ ← sidebar  │ Aktivitas Terakhir (5 baris) │  ← feed inline, bukan cuma link-out
+│  persisten │                              │
+└────────────┴─────────────────────────────┘
 ```
 
 **Breakdown per section**:
@@ -242,8 +251,10 @@ Uji kalibrasi (§SKILL.md langkah 3): jika brief serupa datang dari klinik lain 
 | Section | Isi/tujuan | Kenapa urutannya begini |
 |---|---|---|
 | Header admin | Konteks "saya sedang di panel admin, bukan halaman publik" + jalan keluar cepat | `color-nakhoda` solid membedakan register admin dari publik yang latarnya terang — sinyal visual "mode kerja" |
+| Sidebar navigasi (persisten, S6-S9) | Pindah modul tanpa balik ke dashboard dulu | Revisi dari hub-only — sejak modul Dokter (S8) menambah kartu keempat, bolak-balik ke hub jadi friksi nyata. Tetap flat 1 level (bukan nested), rail vertikal di desktop/tablet, strip tab horizontal di mobile |
 | Indikator Cahaya (ringkasan) | Admin melihat status yang sama dengan pasien | Konsistensi kepercayaan — admin tahu persis apa yang dilihat pasien saat ini |
-| 3 kartu aksi | Satu-satunya jalan navigasi | Sesuai keputusan wireframe §5 — tanpa sidebar, tanpa menu bertingkat |
+| Kartu ringkasan (data, bukan cuma tombol) | Admin lihat kondisi tiap modul tanpa masuk ke dalamnya | Dashboard jadi "ringkasan kerja", bukan sekadar daftar menu |
+| Aktivitas Terakhir (feed inline) | 5 perubahan terakhir langsung terlihat | Sebelumnya cuma 1 baris teks + link ke halaman Riwayat terpisah; sekarang cukup dilihat sekilas tanpa navigasi |
 
 **Strategi konten admin**: Instruksi selalu dalam bentuk perintah aktif yang bisa langsung dieksekusi ("Simpan Jadwal", bukan "Submit"). Error tidak pernah menyalahkan pengguna secara implisit ("Format jam tidak valid, gunakan HH.MM" — bukan "Input salah").
 

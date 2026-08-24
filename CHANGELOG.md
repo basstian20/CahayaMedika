@@ -4,6 +4,21 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Redesign panel admin (S6-S9): navigasi hub-only diganti sidebar/rail persisten
+  (`components/admin/AdminSidebar.tsx`), dipasang lewat layout bersama baru
+  `app/admin/(panel)/layout.tsx` (route group — `/admin/login` sengaja di luar,
+  belum ada session). `AdminHeader.tsx` disederhanakan (hapus prop `backHref`,
+  dirender sekali oleh layout, bukan per-halaman). Dashboard (S6) diubah dari
+  4 kartu tombol polos jadi kartu ringkasan berisi data (jumlah layanan/dokter,
+  terakhir diubah per modul) plus feed Aktivitas Terakhir inline (5 entri
+  riwayat). Form edit jadwal/layanan/dokter (S7/S8) menambah kolom pratinjau
+  tampilan publik di sebelah form (`components/admin/PreviewPane.tsx`), live
+  dari nilai form yang belum disimpan — memakai ulang `LayananCard` dan
+  `DokterCard` (baru, diekstrak dari `app/(public)/page.tsx`) supaya preview
+  tidak drift dari tampilan publik asli. Revisi keputusan "3 kartu, sidebar-free,
+  hub-only" di UI Template Spec §5/§6 — lihat Catatan Revisi 2026-08-21 di
+  dokumen tersebut. Tidak ada token warna/font/radius baru.
 
 ## [0.3.0] - 2026-08-20
 ### Added
