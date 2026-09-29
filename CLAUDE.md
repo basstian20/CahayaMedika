@@ -32,7 +32,7 @@ Delapan dokumen ini adalah **satu rantai keputusan berurutan** — masing-masing
 
 | Layer | Pilihan | Kenapa (ringkas — detail di Tech Spec §2) |
 |---|---|---|
-| Framework | **Next.js 14+, App Router** | SSG + on-demand ISR untuk halaman publik, Route Handlers sebagai API tipis |
+| Framework | **Next.js 15 (App Router)** — dokumen sumber menulis "14+", upgrade ke 15.5.x lewat PR #13 (CHANGELOG 0.2.0) | SSG + on-demand ISR untuk halaman publik, Route Handlers sebagai API tipis |
 | Bahasa | **TypeScript** | — |
 | Backend-as-a-service | **Supabase** — Postgres + Auth + Storage + Row Level Security | RLS jadi **lapisan otorisasi utama**, bukan cuma pemeriksaan di level aplikasi |
 | Hosting | **Vercel**, function region **`sin1`** (Singapore) | Wajib di-set eksplisit lewat `vercel.json` — default Vercel adalah `iad1` (US East). Butuh **Vercel Pro plan**. |
@@ -116,9 +116,10 @@ Response envelope standar: `{ success: boolean, ...data }` — jangan bikin shap
 0004_jadwal_praktik.sql          -- + unique constraint jadwal_praktik_dokter_hari_unique
 0005_riwayat_perubahan.sql       -- + FK constraint bernama riwayat_perubahan_admin_id_fkey
 0006_fn_update_jadwal_dan_riwayat.sql   -- Postgres function, dipanggil via .rpc(), BUKAN dua insert terpisah
+0007_riwayat_perubahan_admin_email_view.sql   -- view riwayat_perubahan_with_admin (JOIN auth.users untuk admin_email; PostgREST tidak bisa embed auth.users)
 ```
 
-**Bucket Storage `dokter-foto` bukan bagian dari migrasi SQL** — provisioning lewat Supabase Dashboard/CLI config terpisah, jangan cari file migrasi ke-7.
+**Bucket Storage `dokter-foto` bukan bagian dari migrasi SQL** — provisioning lewat Supabase Dashboard/CLI config terpisah, jangan cari file migrasinya di `migrations/` (migrasi 0007 adalah view riwayat, tidak berhubungan dengan bucket).
 
 **Kenapa migrasi 6 berupa Postgres function, bukan dua panggilan `.insert()` dari client:** Supabase JS client tidak punya transaction multi-statement lintas panggilan. Kalau `jadwal_praktik` dan `riwayat_perubahan` ditulis lewat dua `.from().insert()` terpisah, itu dua transaction Postgres berbeda — window inkonsistensi kalau salah satu gagal. RPC ke Postgres function menjaga keduanya dalam satu transaction asli. **Jangan "sederhanakan" ini jadi dua insert client-side** — itu bukan simplifikasi, itu menghilangkan atomicity yang jadi alasan migrasi ini ada. Detail penuh: Backend Blueprint §10.1 poin 5.
 

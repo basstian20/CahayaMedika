@@ -2,7 +2,7 @@
 
 Bucket `dokter-foto` **bukan bagian dari migrasi SQL bernomor** di `migrations/` — provisioning
 dilakukan lewat Supabase Dashboard atau Supabase CLI storage config, bukan file `.sql`
-(Backend Blueprint §6). Ini catatan eksplisit supaya tidak ada yang mencari migrasi ke-7.
+(Backend Blueprint §6). Ini catatan eksplisit supaya tidak ada yang mencari migrasinya di `migrations/` (migrasi 0007 yang ada adalah view `riwayat_perubahan_with_admin`, tidak berhubungan dengan bucket).
 
 Setup manual (Dashboard → Storage → New bucket):
 
